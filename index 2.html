@@ -1,0 +1,3753 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"
+    <title>  </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #6a0dad;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .produtos-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .produtos-header input, .produtos-header select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .produtos-header button {
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 150px;
+            margin-top: 10px;
+        }
+
+        .produtos-header button:hover {
+            background-color: #5a0bbd;
+        }
+
+        .produtos-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .produto {
+            display: inline-block;
+            text-align: center;
+            background: white;
+            margin: 10px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            width: 200px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .produto:hover {
+            transform: scale(1.05);
+        }
+
+        .produto img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .produto h3 {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .produto p {
+            color: #555;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        .produto input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .produto button {
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .produto button:hover {
+            background-color: #5a0bbd;
+        }
+
+        .finalizar-compra {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            text-align: center;
+            background-color: #25d366;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .finalizar-compra:hover {
+            background-color: #1ebe57;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #f1f1f1;
+            margin-top: 20px;
+        }
+
+        /* Estilo do botão do WhatsApp */
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .whatsapp-btn img {
+            width: 40px;
+            height: 40px;
+        }
+    </style>
+    <script>
+        const carrinho = [];
+
+        function adicionarAoCarrinho(nome, preco, inputId) {
+            let quantidade = parseInt(document.getElementById(inputId).value);
+            if (quantidade > 0) {
+                carrinho.push({ nome, preco, quantidade });
+                alert(`${nome} adicionado ao carrinho!`);
+            } else {
+                alert('Por favor, selecione uma quantidade válida.');
+            }
+        }
+
+        function finalizarCompra() {
+            let mensagem = 'Olá! Gostaria de finalizar minha compra:\n';
+            let total = 0;
+
+            carrinho.forEach(item => {
+                mensagem += `- ${item.nome} (R$ ${item.preco.toFixed(2)}) x ${item.quantidade} = R$ ${(item.preco * item.quantidade).toFixed(2)}\n`;
+                total += item.preco * item.quantidade;
+            });
+
+            mensagem += `\nTotal: R$ ${total.toFixed(2)}`;
+            const linkWhatsApp = `https://wa.me/5511977348501?text=${encodeURIComponent(mensagem)}`;
+            window.open(linkWhatsApp, '_blank');
+        }
+
+        function buscarProdutos() {
+            const busca = document.getElementById("searchInput").value.toLowerCase();
+            const produtos = document.querySelectorAll(".produto");
+            produtos.forEach(produto => {
+                const nome = produto.querySelector("h3").textContent.toLowerCase();
+                produto.style.display = nome.includes(busca) ? "block" : "none";
+            });
+        }
+
+        function filtrarCategoria() {
+            const categoria = document.getElementById("filterCategoria").value;
+            const produtos = document.querySelectorAll(".produto");
+            produtos.forEach(produto => {
+                const categoriaProduto = produto.getAttribute("data-categoria");
+                produto.style.display = categoria === "todas" || categoria === categoriaProduto ? "block" : "none";
+            });
+        }
+    </script>
+</head>
+<body>
+    <header>
+           <h1>DISTRIBUIDORA INOVA</h1>
+		<h1>SÓ MENTE ATACADO ACIMA DE R$500,00</H1>
+    </HEADER>
+
+    <div class="container">
+        <div class="produtos-header">
+            <input type="text" id="searchInput" placeholder="Buscar produtos" oninput="buscarProdutos()">
+            <select id="filterCategoria" onchange="filtrarCategoria()">
+                <option value="todas">Todas as Categorias</option>
+                <option value="CABOS">CABOS</option>
+                <option value="CAIXA DE SOM">CAIXA DE SOM</option>
+                <option value="POWER BANK">POWER BANK</option>
+                <option value="UMIDIFICADOR">UMIDIFICADOR</option>
+                <option value="FONES">FONES</option>
+				<option value="SUPORTES">SUPORTES</option>
+				<option value="COPOS">COPOS </option>
+				<option value="GARRAFAS">GARRAFAS</option>
+				<option value="GAMES">GAMES</option>
+				<option value="CARREGADOR">CARREGADOR</option>
+				<option value="ACESSÓRIOS">ACESSÓRIOS</option>
+            </select>
+        </div>
+
+        <div class="produtos-container">
+            <div class="produto" data-categoria="CABOS">
+                <img src=https://i.imgur.com/luaqO8A.jpeg alt="CABOS TIPO C 1">
+                <h3>CABOS TIPO C TUBO </h3>
+                <p>R$ 6,50</p>
+                <input type="number" id="CABOS TIPO C 1" value="0" min="0">
+                <button onclick="adicionarAoCarrinho('CABOS TIPO C 1', 6.50, 'CABOS TIPO C 1')">Adicionar</button>
+            </div>
+            <div class="produto" data-categoria="CABOS">
+                <img src=https://i.imgur.com/jywVhbO.jpeg alt="CABOS 2 METROS IPHONE 2">
+                <h3>CABOS 2 METROS IPHONE TUBO </h3>
+                <p>R$ 7,50</p>
+                <input type="number" id="CABOS 2 METROS IPHONE 2" value="0" min="0">
+                <button onclick="adicionarAoCarrinho('CABOS 2 METROS IPHONE 2', 7.50, 'CABOS 2 METROS IPHONE 2')">Adicionar</button>
+            </div>
+           <div class="produto" data-categoria="CABO">
+    <img src=https://i.imgur.com/kmQRYKF.jpeg alt="CABOS IPHONE TUBO 3">
+    <h3>CABOS IPHONE TUBO</h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="CABOS IPHONE TUBO 3" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE TUBO 3', 6.00, 'CABOS IPHONE TUBO 3')">Adicionar</button>
+</div>
+            <!-- Adicionar mais produtos aqui com IDs únicos --><div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/luaqO8A.jpeg alt="CABOS IPHONE TUBO 4">
+    <h3>CABOS IPHONE TUBO</h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CABOS IPHONE TUBO 4" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE TUBO 4', 6.50, 'CABOS IPHONE TUBO 4')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/luaqO8A.jpeg alt="CABOS V8 TUBO 5">
+    <h3>CABOS V8 TUBO</h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CABOS V8 TUBO 5" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 TUBO 5', 6.50, 'CABOS V8 TUBO 5')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/jywVhbO.jpeg alt="CABOS 2 METROS V8 TUBO 6">
+    <h3>CABOS 2 METROS V8 TUBO</h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="CABOS 2 METROS V8 TUBO 6" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS 2 METROS V8 TUBO 6', 7.50, 'CABOS 2 METROS V8 TUBO 6')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/jywVhbO.jpeg alt="CABOS TIPO C 2 METROS TUBO 7">
+    <h3>CABOS TIPO C 2 METROS TUBO </h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="CABOS TIPO C 2 METROS TUBO 7" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 2 METROS TUBO 7', 7.50, 'CABOS TIPO C 2 METROS TUBO 7')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/kmQRYKF.jpeg alt="CABOS TUBO V8 8">
+    <h3>CABOS TUBO V8</h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="CABOS TUBO V8 8" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TUBO V8 8', 6.00, 'CABOS TUBO V8 8')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/kmQRYKF.jpeg alt="CABOS TUBO TIPO C 9">
+    <h3>CABOS TUBO TIPO C </h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="CABOS TUBO TIPO C 9 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TUBO TIPO C 9 ', 6.00, 'CABOS TUBO TIPO C 9 ')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/blrJWFc.jpeg alt="CABOS V8 10">
+    <h3>CABOS V8 </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS V8 10" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 10', 5.50, 'CABOS V8 10')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/blrJWFc.jpeg alt="CABOS TIPO C 11">
+    <h3>CABOS TIPO C  </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS TIPO C 11" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 11', 5.50, 'CABOS TIPO C 11')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/blrJWFc.jpeg alt="CABOS IPHONE 12">
+    <h3>CABOS IPHONE </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS IPHONE 12" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE 12', 5.50, 'CABOS IPHONE 12')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABO">
+    <img src=https://i.imgur.com/ombLZcs.jpeg alt="CABOS 1 METRO INOVA TIPO C 13  ">
+    <h3>CABOS 1 METRO INOVA TIPO C</h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS 1 METRO INOVA TIPO C 13 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS 1 METRO INOVA TIPO C 13', 5.50, 'CABOS 1 METRO INOVA TIPO C 13 ')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABO">
+    <img src=https://i.imgur.com/ombLZcs.jpeg alt="CABOS 1 METRO INOVA IPHONE 14  ">
+    <h3>CABOS 1 METRO INOVA IPHONE</h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS 1 METRO INOVA IPHONE 14 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS 1 METRO INOVA IPHONE 14', 5.50, 'CABOS 1 METRO INOVA IPHONE 14 ')">Adicionar</button>
+</div> 
+<div class="produto" data-categoria="CABO">
+    <img src=https://i.imgur.com/ombLZcs.jpeg alt="CABOS V8 1 METRO INOVA 15 ">
+    <h3>CABOS V8 1 METRO INOVA</h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS V8 1 METRO INOVA 15" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 1 METRO INOVA 15 ', 5.50, 'CABOS V8 1 METRO INOVA 15')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/6QaySXd.jpeg alt="CABOS IPHONE 2 METRO 16">
+    <h3>CABOS IPHONE 2 METRO</h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CABOS IPHONE 2 METRO 16" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE 2 METRO 16', 6.50, 'CABOS IPHONE 2 METRO 16')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/6QaySXd.jpeg alt="CABOS TIPO C 2 METROS 17">
+    <h3>CABOS TIPO C 2 METROS</h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CABOS TIPO C 2 METROS 17" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 2 METROS 17', 6.50, 'CABOS TIPO C 2 METROS 17')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/6QaySXd.jpeg alt="CABOS V8 2 METROS 18">
+    <h3>CABOS V8 2 METROS</h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CABOS V8 2 METROS 18" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 2 METROS 18', 6.50, 'CABOS V8 2 METROS 18')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/9x97gHV.jpeg alt="CABOS 5714 IPHONE 19">
+    <h3>CABOS 5714 IPHONE </h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="CABOS 5714 IPHONE 19" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS 5714 IPHONE 19', 8.50, 'CABOS 5714 IPHONE 19')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/9x97gHV.jpeg alt="CABOS 5714 V8 20">
+    <h3>CABOS 5714 V8</h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="CABOS 5714 V8 20" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS 5714 V8 20', 8.50, 'CABOS 5714 V8 20')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/eOBP8cR.jpeg alt="CABOS TIPO C 21">
+    <h3>CABOS TIPO C</h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS TIPO C 21" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 21', 5.50, 'CABOS TIPO C 21')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/eOBP8cR.jpeg alt="CABOS TIPO C 22">
+    <h3>CABOS TIPO C</h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS TIPO C 22" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 22', 5.50, 'CABOS TIPO C 22')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/Ook7Gmt.jpeg alt="CABOS IPHONE 23">
+    <h3>CABOS IPHONE</h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS IPHONE 23" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE 23', 5.50, 'CABOS IPHONE 23')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/Ook7Gmt.jpeg alt="CABOS V8 24">
+    <h3>CABOS V8</h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABOS V8 24" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 24', 5.50, 'CABOS V8 24')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/STD5KsT.jpeg alt="CABO USB/IPHONE 25">
+    <h3>CABOS USB IPHONE</h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABO USB IPHONE 25" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABO USB IPHONE 25', 5.50, 'CABO USB IPHONE 25')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/3BbJIhB.jpeg alt="CABOS USB C IPHONE 26">
+    <h3>CABOS USB C IPHONE</h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="CABOS USB C IPHONE 26" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS USB C IPHONE 26', 12.00, 'CABOS USB C IPHONE 26')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src= https://i.imgur.com/LaB0H08.jpeg="CABOS USB C 27">
+    <h3>CABOS USB C</h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="CABOS USB C 27" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS USB C 27', 7.50, 'CABOS USB C 27')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/DmsRpyz.jpegalt alt="AL C18 28">
+    <h3>AL C18</h3>
+    <p>R$ 4,50</p>
+    <input type="number" id="AL C18 28" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('AL C18 28', 4.50, 'AL C18 28')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src= https://i.imgur.com/Ns1gaEN.jpeg="CABOS IPHONE 29">
+    <h3>CABOS IPHONE</h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="CABOS IPHONE 29" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE 29', 6.00, 'CABOS IPHONE 29')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src= https://i.imgur.com/Ns1gaEN.jpeg="CABOS TIPO C 30">
+    <h3>CABOS TIPO C</h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="CABOS TIPO C 30" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 30', 6.00, 'CABOS TIPO C 30')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src= https://i.imgur.com/Ns1gaEN.jpeg="VCABOS V8 31">
+    <h3>CABOS V8</h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="CABOS V8 31" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 31', 6.00, 'CABOS V8 31')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/xZ17jem.jpeg alt="CABOS IPHONE 2 METROS 32">
+    <h3>CABOS IPHONE 2 METROS</h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CABOS IPHONE 2 METROS 32" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE 2 METROS 32', 6.50, 'CABOS IPHONE 2 METROS 32')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/xZ17jem.jpeg alt="CABOS TIPO C 2 METROS 33">
+    <h3>CABOS TIPO C 2 METROS</h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CABOS TIPO C 2 METROS 33" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 2 METROS 33', 6.50, 'CABOS TIPO C 2 METROS 33')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/xZ17jem.jpeg alt="CABOS V8 2 METROS 34">
+    <h3>CABOS V8 2 METROS</h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CABOS V8 2 METROS 34" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 2 METROS 34', 6.50, 'CABOS V8 2 METROS 34')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/qyR9npQ.jpeg alt="CABOS V8 2 METROS 35">
+    <h3>CABOS V8 2 METROS </h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="CABOS V8 2 METROS 35" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 2 METROS 35', 7.50, 'CABOS V8 2 METROS 35')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/qyR9npQ.jpeg alt="2 CABOS TIPO C 2 METROS 36">
+    <h3>CABOS TIPO C 2 METROS</h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="CABOS TIPO C 2 METROS 36" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 2 METROS 36', 7.50, 'CABOS TIPO C 2 METROS 36')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/qyR9npQ.jpeg alt="CABOS IPHONE 2 METROS 37">
+    <h3>CABOS IPHONE 2 METROS</h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="CABOS IPHONE 2 METROS 37" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE 2 METROS 37', 7.50, 'CABOS IPHONE 2 METROS 37')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/nQbV45H.jpeg  alt="CABO 5702 38">
+    <h3>CABOS 5702</h3>
+    <p>R$ 9,50</p>
+    <input type="number" id="CABO 5702 38" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABO 5702 38', 9.50, 'CABO 5702 38')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/DEorRM7.jpeg alt="CABOS V8 10 PEÇAS 39">
+    <h3>CABOS V8 10 PEÇAS</h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="CABOS V8 10 PEÇAS 39" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 10 PEÇAS 39',40.00, 'CABOS V8 10 PEÇAS 39')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/DEorRM7.jpeg alt="CABOS IPHONE 10 PEÇAS 40">
+    <h3>CABOS IPHONE 10 PEÇAS</h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="CABOS IPHONE 10 PEÇAS 40" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE 10 PEÇAS 40',40.00, 'CABOS IPHONE 10 PEÇAS 40')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/DEorRM7.jpeg alt="CABOS TIPO C 10 PEÇAS 41">
+    <h3>CABOS TIPO C 10 PEÇAS</h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="CABOS TIPO C 10 PEÇAS 41" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 10 PEÇAS 41',40.00, 'CABOS TIPO C 10 PEÇAS 41')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/9ODw1XP.jpeg alt="V8 PACOTE COM 20 PEÇAS 42">
+    <h3>V8 PACOTE COM 20 PEÇAS</h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="V8 PACOTE COM 20 PEÇAS 42" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('V8 PACOTE COM 20 PEÇAS 42', 30.00, 'V8 PACOTE COM 20 PEÇAS 42')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/UbakAig.jpeg alt="PACOTE COM 10 V8 43">
+    <h3>PACOTE COM 10 V8 </h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="PACOTE COM 10 V8 43" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('PACOTE COM 10 V8 43', 30.00, 'PACOTE COM 10 V8 43')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/UbakAig.jpeg alt="PACOTE COM 10 IPHONE 44">
+    <h3>PACOTE COM 10 IPHONE</h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="PACOTE COM 10 IPHONE 44" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('PACOTE COM 10 IPHONE 44', 30.00, 'PACOTE COM 10 IPHONE 44')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/UbakAig.jpeg alt="PACOTE COM 10 TIPO C 45">
+    <h3>PACOTE COM 10 TIPO C</h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="PACOTE COM 10 TIPO C 45" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('PACOTE COM 10 TIPO C 45', 30.00, 'PACOTE COM 10 TIPO C 45')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/5lt3Ymh.jpeg alt="CABOS V8 CADA 46">
+    <h3>CABOS V8 CADA</h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="CABOS V8 CADA 46" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 CADA 46', 3.50, 'CABOS V8 CADA 46')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/5lt3Ymh.jpeg alt="CABOS IPHONE CADA 47">
+    <h3>CABOS IPHONE CADA</h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="CABOS IPHONE CADA 47" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE CADA 47', 3.50, 'CABOS IPHONE CADA 47')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/5lt3Ymh.jpeg alt="CABOS TIPO C CADA 48">
+    <h3>CABOS TIPO C CADA</h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="CABOS TIPO C CADA 48" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C CADA 48', 3.50, 'CABOS TIPO C CADA 48')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/pHisViV.jpeg  alt="CABOS V8 49">
+    <h3>CABOS V8 </h3>
+    <p>R$ 4,00</p>
+    <input type="number" id="CABOS V8 49" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 49', 4.00, 'CABOS V8 49')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/pHisViV.jpeg  alt="CABOS TIPO C 50">
+    <h3>CABOS TIPO C</h3>
+    <p>R$ 4,00</p>
+    <input type="number" id="CABOS TIPO C 50" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 50', 4.00, 'CABOS TIPO C 50')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/pHisViV.jpeg  alt="CABOS IPHONE 51">
+    <h3>CABOS IPHONE</h3>
+    <p>R$ 4,00</p>
+    <input type="number" id="CABOS IPHONE 51" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE 51', 4.00, 'CABOS IPHONE 51')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/5x9xxDg.jpeg alt="CABOS V8 52">
+    <h3>CABOS V8</h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="CABOS V8 52" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS V8 52', 3.50, 'CABOS V8 52')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/5x9xxDg.jpeg alt="CABOS TIPO C 53">
+    <h3>CABOS TIPO C </h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="CABOS TIPO C 53" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS TIPO C 53', 3.50, 'CABOS TIPO C 53')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/5x9xxDg.jpeg alt="CABOS IPHONE 54">
+    <h3>CABOS IPHONE</h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="CABOS IPHONE 54" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS IPHONE 54', 3.50, 'CABOS IPHONE 54')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/pn3CUqr.jpeg alt="P2 55">
+    <h3>P2 </h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="P2 55" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('P2 55', 3.50, 'P2 55')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/tCIJ6bz.jpeg alt="P2 2 rca 56">
+    <h3>P2 2 rca </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="P2 2 rca 56" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('P2 2 rca 56', 5.50, 'P2 2 rca 56')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/tzWBjAJ.jpeg alt="CABOS v3 57">
+    <h3>CABOS v3 </h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="CABOS v3 57" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS v3 57', 3.50, 'CABOS v3 57')">Adicionar</button>
+</div>
+
+
+
+
+<!-- Repetir para os próximos produtos --><div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/9niiFht.jpeg alt="RCA RCA 58">
+    <h3>RCA RCA </h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="RCA RCA 58" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RCA RCA 58', 6.00, 'RCA RCA 58')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/gLODZn0.jpeg alt="CABOS P2 RCA 59">
+    <h3>CABOS P2 RCA </h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="CABOS P2 RCA 59" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS P2 RCA 59', 6.00, 'CABOS P2 RCA 59')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/RLTboi8.jpeg alt="CABOS USB USB 60">
+    <h3>CABOS USB USB </h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="CABOS USB USB 60" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS USB USB 60', 6.00, 'CABOS USB USB 60')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/E0KoXtR.jpeg alt="HDMI 2 METROS 61">
+    <h3>HDMI 2 METROS </h3>
+    <p>R$ 11,00</p>
+    <input type="number" id="HDMI 2 METROS 61" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('HDMI 2 METROS 61', 11.00, 'HDMI 2 METROS 61')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/E0KoXtR.jpeg alt="HDMI 3 METROS 62">
+    <h3>HDMI 3 METROS </h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="HDMI 3 METROS 62" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('HDMI 3 METROS 62', 13.00, 'HDMI 3 METROS 62')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/E0KoXtR.jpeg alt="HDMI 5 METROS 63">
+    <h3>HDMI 5 METROS </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="HDMI 5 METROS 63" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('HDMI 5 METROS 63', 16.00, 'HDMI 5 METROS 63')">Adicionar</button>
+</div> 
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/5pEjJy1.jpeg alt="CABOS 193 64">
+    <h3>CABOS 193</h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="CABOS 193 64" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS 193 64', 15.00, 'CABOS 193 64')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/5TmxUvD.jpeg alt="CABOS 7220 65">
+    <h3>CABOS 7220 </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="CABOS 7220 65" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABOS 7220 65', 8.00, 'CABOS 7220 65')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/HMHNMdW.jpeg alt="ADAPTADOR 7385 66">
+    <h3>ADAPTADOR 7385 </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="ADAPTADOR 7385 66" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('ADAPTADOR 7385 66', 14.00, 'ADAPTADOR 7385 66')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/o6tyHpF.jpeg alt="ADAPTADOR 7582 67">
+    <h3>ADAPTADOR 7582</h3>
+    <p>R$ 10,00</p>
+    <input type="number" id="ADAPTADOR 7582 67" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('ADAPTADOR 7582 67', 10.00, 'ADAPTADOR 7582 67')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/dbLK1uH.jpeg alt="ADAPTADOR TIPO C 7582 68">
+    <h3>ADAPTADOR TIPO C 7582 </h3>
+    <p>R$ 10,00</p>
+    <input type="number" id="ADAPTADOR TIPO C 7582 68" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('ADAPTADOR TIPO C 7582 68', 10.00, 'ADAPTADOR TIPO C 7582 68')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/5jgyfGj.jpeg alt="CARREGADOR 8112 69">
+    <h3>CARREGADOR 8112  </h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CARREGADOR 8112 69" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 8112 69', 6.50, 'CARREGADOR 8112 69')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/VXqklyQ.jpeg alt="CARREGADOR v8 70">
+    <h3>CARREGADOR V8 </h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CARREGADOR v8 70" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR v8 70', 6.50, 'CARREGADOR v8 70')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/VXqklyQ.jpeg alt="CARREGADOR TIPO C 71">
+    <h3>CARREGADOR TIPO C </h3>
+    <p>R$ 6,50</p>
+    <input type="number" id="CARREGADOR TIPO C 71" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C 71', 6.50, 'CARREGADOR TIPO C 71')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/u0yX0Ov.jpeg alt="CARREGADOR 9012 2.1 72">
+    <h3>CARREGADOR 9012 2.1</h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="CARREGADOR 9012 2.1 72" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 9012 2.1 72', 7.50, 'CARREGADOR 9012 2.1 72')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/ya5QNF5.jpeg alt="CARREGADOR v8 9012 73">
+    <h3>CARREGADOR v8 9012 </h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="CARREGADOR v8 9012 73" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR v8 9012 73', 7.50, 'CARREGADOR v8 9012 73')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/rJ1Jipa.jpeg alt="CARREGADOR v8 5204 74">
+    <h3>CARREGADOR v8 5204 </h3>
+    <p>R$ 10,50</p>
+    <input type="number" id="CARREGADOR v8 5204 74" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR v8 5204 74', 10.00, 'CARREGADOR v8 5204 74')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/Pr2WOAO.jpeg alt="CARREGADOR TIPO C 5204 3.1 75">
+    <h3>CARREGADOR TIPO C 5204 3.1 </h3>
+    <p>R$ 11,50</p>
+    <input type="number" id="CARREGADOR TIPO C 5204 3.1 75" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C 5204 3.1 75', 11.50, 'CARREGADOR TIPO C 5204 3.1 75')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/FuYUhOb.jpeg alt="CARREGADOR IPHONE 3251 76">
+    <h3>CARREGADOR IPHONE 3251 </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="CARREGADOR IPHONE 3251  76" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR IPHONE 3251  76', 14.00, 'CARREGADOR IPHONE 3251  76')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/9xPYB6i.jpeg alt="CARREGADOR TIPO C 5221 77">
+    <h3>CARREGADOR TIPO C 5221</h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="CARREGADOR TIPO C 5221 77" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C 5221 77', 12.00, 'CARREGADOR TIPO C 5221 77')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/9xPYB6i.jpeg alt="CARREGADOR TIPO C 5221 78">
+    <h3> CARREGADOR TIPO C 5221 </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="CARREGADOR TIPO C 5221 78" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C 5221 78', 16.00, 'CARREGADOR TIPO C 5221 78')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/mrc68dO.jpeg alt="CARREGADOR V8 3166 20W 79">
+    <h3>CARREGADOR V8 3166 20W </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="CARREGADOR V8 3166 20W 79" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 3166 20W 79', 14.00, 'CARREGADOR V8 3166 20W 79')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/OtRpO9Z.jpeg alt="CARREGADOR TIPO C 9916 80">
+    <h3>CARREGADOR TIPO C 9916 </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="CARREGADOR TIPO C 9916 80" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C 9916 80', 15.00, 'CARREGADOR TIPO C 9916 80')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/zIMBv8w.jpeg alt="MOTOROLA VERMELHO 81">
+    <h3>MOTOROLA VERMELHO  </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="MOTOROLA VERMELHO 81" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MOTOROLA VERMELHO 81', 16.00, 'MOTOROLA VERMELHO 81')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/5KhR2iW.jpeg alt="CARREGADOR TURBO TIPO C 20W 5238 82">
+    <h3>CARREGADOR TURBO TIPO C 20W 5238 </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="CARREGADOR TURBO TIPO C 20W 5238 82" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TURBO TIPO C 20W 5238 82', 8.00, 'CARREGADOR TURBO TIPO C 20W 5238 82')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/2GgoY63.jpeg alt="CARREGADOR V8 83">
+    <h3>CARREGADOR V8 </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="CARREGADOR V8 83" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 83', 14.00, 'CARREGADOR V8 83')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/GufdJUj.jpeg alt="CARREGADOR V8 9054 84">
+    <h3> CARREGADOR V8 9054</h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="CARREGADOR V8 9054 84" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 9054 84', 14.00, 'CARREGADOR V8 9054 84')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/GufdJUj.jpeg alt="CARREGADOR TIPOC 9054 85">
+    <h3>CARREGADOR TIPOC 9054 </h3>
+    <p>R$ 14,50</p>
+    <input type="number" id="CARREGADOR TIPOC 9054 85" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPOC 9054 85', 11.50, 'CARREGADOR TIPOC 9054 85')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/dVCnsSd.jpeg alt="CARREGADOR V8 4.8 3170 86">
+    <h3> CARREGADOR V8 4.8 3170 </h3>
+    <p>R$ 11,50</p>
+    <input type="number" id="CARREGADOR V8 4.8 3170 86" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 4.8 3170 86', 15.50, 'CARREGADOR V8 4.8 3170 86')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/48tsKJA.jpeg alt="CARREGADOR 9001 V8 87">
+    <h3> CARREGADOR 9001 V8</h3>
+    <p>R$ 11,50</p>
+    <input type="number" id="CARREGADOR 9001 V8 87" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 9001 V8 87', 15.50, 'CARREGADOR 9001 V8 87')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/48tsKJA.jpeg alt="CARREGADOR 9001 TIPO C 88">
+    <h3>CARREGADOR 9001 TIPO C </h3>
+    <p>R$ 15,50</p>
+    <input type="number" id="CARREGADOR 9001 TIPO C 88" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 9001 TIPO C 88', 12.50, 'CARREGADOR 9001 TIPO C 88')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONTES">
+    <img src=https://i.imgur.com/nh7WPdx.jpegalt="FONTE 3.1 3160 89">
+    <h3>CARREGADOR TIPO C 4.8 3155 </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="CARREGADOR TIPO C 4.8 3155 89" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C 4.8 3155 89', 9.00, 'CARREGADOR TIPO C 4.8 3155 89')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/oSKFSbn.jpeg alt="FONTE 3.1 3160 90">
+    <h3> FONTE 3.1 3160  </h3>
+    <p>R$ 9,00</p>
+    <input type="number" id="FONTE 3.1 3160 90" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONTE 3.1 3160 90', 14.00, 'FONTE 3.1 3160 90')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/azyXcRR.jpeg alt="CARREGADOR TRUBO 2175 91">
+    <h3>CARREGADOR TRUBO 2175 </h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="CARREGADOR TRUBO 2175 91" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TRUBO 2175 91', 8.50, 'CARREGADOR TRUBO 2175 91')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONTES">
+    <img src=https://i.imgur.com/aTifNLK.jpeg alt="CARREGADOR 5191 V8 92">
+    <h3>CARREGADOR 5191 V8 </h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="CARREGADOR 5191 V8 92" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 5191 V8 92', 11.00, 'CARREGADOR 5191 V8 92')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/d5XRrRH.jpeg alt="FONTE 5.1 93">
+    <h3>FONTE 5.1  </h3>
+    <p>R$ 11,00</p>
+    <input type="number" id="FONTE 5.1 93" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONTE 5.1 93', 16.00, 'FONTE 5.1 93')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/DFWxwds.jpeg alt="CARREGADOR TRUBO SAMSUNG 94">
+    <h3>CARREGADOR TRUBO SAMSUNG </h3>
+    <p>R$ 16,50</p>
+    <input type="number" id="CARREGADOR TRUBO SAMSUNG 94" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TRUBO SAMSUNG 94', 9.50, 'CARREGADOR TRUBO SAMSUNG 94')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/s4SKLfX.jpeg alt="CARREGADOR 3.1 9006 95">
+    <h3>CARREGADOR 3.1 9006 </h3>
+    <p>R$ 9,50</p>
+    <input type="number" id="CARREGADOR 3.1 9006 95" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 3.1 9006 95', 9.50, 'CARREGADOR 3.1 9006 95')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/l2FdlFd.jpeg alt="CARREGADOR 9011 V896">
+    <h3>CARREGADOR 9011 V8 </h3>
+    <p>R$ 9,50</p>
+    <input type="number" id="CARREGADOR 9011 V896" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 9011 V896', 19.00, 'CARREGADOR 9011 V896')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/uCwz7dQ.jpeg alt="CARREGADOR USB C 3165 97">
+    <h3>CARREGADOR USB C 3165  </h3>
+    <p>R$ 19,00</p>
+    <input type="number" id="CARREGADOR USB C 3165 97" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR USB C 3165 97', 12.00, 'CARREGADOR USB C 3165 97')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/lIRPBRz.jpeg alt="CARREGADOR V8 5.1 9018 98">
+    <h3>CARREGADOR V8 5.1 9018  </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="CARREGADOR V8 5.1 9018 98" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 5.1 9018 98', 8.50, 'CARREGADOR V8 5.1 9018 98')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/PZc9PGF.jpeg alt="CARREGADOR TIPO C 5085 99">
+    <h3>CARREGADOR TIPO C 5085 </h3>
+    <p>R$ 9,50</p>
+    <input type="number" id="CARREGADOR TIPO C 5085 99" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C 5085 99', 9.50, 'CARREGADOR TIPO C 5085 99')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/PZc9PGF.jpeg alt="CARREGADOR V8 5085 100">
+    <h3>CARREGADOR V8 5085 </h3>
+    <p>R$ 9,50</p>
+    <input type="number" id="CARREGADOR V8 5085 100" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 5085 100', 9.00, 'CARREGADOR V8 5085 100')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/TsedvK4.jpeg alt="CARREGADOR 9006 101">
+    <h3> CARREGADOR 9006  </h3>
+    <p>R$ 9,00</p>
+    <input type="number" id="CARREGADOR V8 5.1 101" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 9006 101', 9.00, 'CARREGADOR 9006 101')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/f2FWA8L.jpeg alt="CARREGADOR v8 5.1 102">
+    <h3>CARREGADOR v8 5.1</h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="CARREGADOR v8 5.1 102" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR v8 5.1 102', 14.00, 'CARREGADOR v8 5.1 102')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/f2FWA8L.jpeg alt="CARREGADOR IPHONE 5.1 103">
+    <h3>CARREGADOR IPHONE 5.1</h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="CARREGADOR IPHONE 5.1 103" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR IPHONE 5.1 103', 14.00, 'CARREGADOR IPHONE 5.1 103')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/f2FWA8L.jpeg alt="CARREGADOR IPHONE 3118 104">
+    <h3>CARREGADOR TIPO C 5.1  </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="CARREGADOR TIPO C 5.1 104" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C 5.1 104', 14, 'CARREGADOR TIPO C 5.1 104')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/3bl12fP.jpeg alt="CARREGADOR IPHONE 3118 105">
+    <h3>CARREGADOR IPHONE 3118</h3>
+    <p>R$ 11,50</p>
+    <input type="number" id="CARREGADOR IPHONE 3118 105" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR IPHONE 3118 105', 11.50, 'CARREGADOR IPHONE 3118 105')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/B6bbTZB.jpeg alt="CARREGADOR V8 106">
+    <h3>CARREGADOR V8 </h3>
+    <p>R$ 12,50</p>
+    <input type="number" id="CARREGADOR V8 106" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 106', 12.50, 'CARREGADOR V8 106')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/B6bbTZB.jpeg alt="CARREGADOR TIPO C 107">
+    <h3>CARREGADOR TIPO C </h3>
+    <p>R$ 12,50</p>
+    <input type="number" id="CARREGADOR TIPO C 107" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C 107', 12.50, 'CARREGADOR TIPO C 107')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/B6bbTZB.jpeg alt="CARREGADOR IPHONE 108">
+    <h3>CARREGADOR IPHONE</h3>
+    <p>R$ 12,50</p>
+    <input type="number" id="CARREGADOR IPHONE 108" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR IPHONE 108', 12.50, 'CARREGADOR IPHONE 108')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONTE">
+    <img src=https://i.imgur.com/yDRmc8Y.jpeg alt="FONTE 4.8 109">
+    <h3>FONTE 4.8 </h3>
+    <p>R$ 10,00</p>
+    <input type="number" id="FONTE 4.8 109" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONTE 4.8 109', 10, 'FONTE 4.8 109')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/0eDf3py.jpeg alt="CARREGADOR V8 110">
+    <h3>CARREGADOR V8 </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="CARREGADOR V8 110" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 110', 16, 'CARREGADOR V8 110')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/0eDf3py.jpeg alt="CARREGADOR  TIPO C 111">
+    <h3>CARREGADOR  TIPO C </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="CARREGADOR  TIPO C 111" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR  TIPO C 111', 16, 'CARREGADOR  TIPO C 111')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/0eDf3py.jpeg alt="CARREGADOR IPHONE 112">
+    <h3>CARREGADOR IPHONE</h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="CARREGADOR IPHONE 112" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR IPHONE 112', 16, 'CARREGADOR IPHONE 112')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/JkVuTDE.jpeg alt="CARREGADOR COLORIDO V8 113">
+    <h3>CARREGADOR COLORIDO V8 </h3>
+    <p>R$ 11,00</p>
+    <input type="number" id="CARREGADOR COLORIDO V8 113" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR COLORIDO V8 113', 11, 'CARREGADOR COLORIDO V8 113')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/JkVuTDE.jpeg alt="CARREGADOR COLORIDO TIPO C 114">
+    <h3>CARREGADOR COLORIDO TIPO C </h3>
+    <p>R$ 11,00</p>
+    <input type="number" id="CARREGADOR COLORIDO TIPO C 114" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR COLORIDO TIPO C 114', 11, 'CARREGADOR COLORIDO TIPO C 114')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/JkVuTDE.jpeg alt="CARREGADOR COLORIDO IPHONE 115">
+    <h3>CARREGADOR COLORIDO IPHONE</h3>
+    <p>R$ 11,00</p>
+    <input type="number" id="CARREGADOR COLORIDO IPHONE 115" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR COLORIDO IPHONE 115', 11, 'CARREGADOR COLORIDO IPHONE 115')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/CtRBM2f.jpeg alt="CARREGADOR V8 116">
+    <h3> CARREGADOR V8 </h3>
+    <p>R$ 10,50</p>
+    <input type="number" id="CARREGADOR V8 116" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 116', 10.50, 'CARREGADOR V8 116')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/CtRBM2f.jpeg alt="CARREGADOR TIPO C  116">
+    <h3> CARREGADOR TIPO C </h3>
+    <p>R$ 10,50</p>
+    <input type="number" id="CARREGADOR TIPO C  116" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR TIPO C  116', 10.50, 'CARREGADOR TIPO C  116')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/9abnMY9.jpeg alt="CARREGADOR MOTOROLA V8 117">
+    <h3>CARREGADOR MOTOROLA V8  </h3>
+    <p>R$ 13,50</p>
+    <input type="number" id="CARREGADOR MOTOROLA V8 117" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR MOTOROLA V8 117', 13.50, 'CARREGADOR MOTOROLA V8 117')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/9abnMY9.jpeg alt="CARREGADOR MOTOROLA TIPO C 118">
+    <h3>CARREGADOR MOTOROLA TIPO C </h3>
+    <p>R$ 13,50</p>
+    <input type="number" id="CARREGADOR MOTOROLA TIPO C 118" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR MOTOROLA TIPO C118', 13.50, 'CARREGADOR MOTOROLA TIPO C118')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/ilPXP6e.jpeg alt="CARREGADOR V8 5221 5.1 119">
+    <h3>CARREGADOR V8 5221 5.1 </h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="CARREGADOR V8 5221 5.1 119" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 5221 5.1 119', 13, 'CARREGADOR V8 5221 5.1 119')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/EsZkdW7.jpeg alt="CARREGADOR 18W MODELO 9001 120">
+    <h3>CARREGADOR 18W MODELO 9001 </h3>
+    <p>R$ 17,00</p>
+    <input type="number" id="CARREGADOR 18W MODELO 9001 120" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 18W MODELO 9001 120', 17, 'CARREGADOR 18W MODELO 9001 120')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/xiTrPgI.jpeg alt="CARREGADOR IPHONE 121">
+    <h3>CARREGADOR IPHONE </h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="CARREGADOR IPHONE 121" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR IPHONE 121', 13, 'CARREGADOR IPHONE 121')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONTE">
+    <img src=https://i.imgur.com/2eqG1q3.jpeg alt="FONTE USB C 122">
+    <h3>FONTE USB C </h3>
+    <p>R$ 23,00</p>
+    <input type="number" id="FONTE USB C 122" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONTE USB C 122', 23, 'FONTE USB C 122')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/ikttvXG.jpeg alt="CARREGADOR 0094  123">
+    <h3>CARREGADOR 0094 </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="CARREGADOR 0094  123" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR 0094  123', 25, 'CARREGADOR 0094  123')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/LLtB535.jpeg alt="CARREGADOR USB C 20W 124">
+    <h3>CARREGADOR USB C 20W </h3>
+    <p>R$ 27,00</p>
+    <input type="number" id="CARREGADOR USB C 20W 124" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR USB C 20W 124', 27, 'CARREGADOR USB C 20W 124')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/qAgDNSD.jpeg alt="CARREGADOR V8 9011 125">
+    <h3> CARREGADOR V8 9011</h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="CARREGADOR V8 9011 125" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 9011 125', 8.50, 'CARREGADOR V8 9011 125')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/Do1Bxmn.jpeg alt="CARREGADOR V8 5062 126">
+    <h3>CARREGADOR V8 5062 </h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="CARREGADOR V8 5062 126" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR V8 5062 126', 8.50, 'CARREGADOR V8 5062 126')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONTE">
+    <img src=https://i.imgur.com/jExOays.jpeg alt="FONTE 5219 127">
+    <h3>FONTE 5219 </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="FONTE 5219 127" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONTE 5219 127', 16, 'FONTE 5219 127')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABO">
+    <img src=https://i.imgur.com/XYKKRX0.jpeg alt="CABO IPHONE 128">
+    <h3>CABO IPHONE </h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="CABO IPHONE 128" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABO IPHONE 128', 8.50, 'CABO IPHONE 128')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/hUhMjta.jpeg alt="POWER BANK MAGNETICO 129">
+    <h3>POWER BANK MAGNETICO</h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="POWER BANK MAGNETICO 129" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK MAGNETICO 129', 20, 'POWER BANK MAGNETICO 129')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/WJotruH.jpeg alt="POWER BANK 1013 130">
+    <h3>POWER BANK 1013 </h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="POWER BANK 1013 130" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK 1013 130', 20, 'POWER BANK 1013 130')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/FZMUVUf.jpeg alt="POWER BANK 1068 131">
+    <h3>POWER BANK 1068 </h3>
+    <p>R$ 38,00</p>
+    <input type="number" id="POWER BANK 1068 131" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK 1068 131', 38, 'POWER BANK 1068 131')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/HlSWs1v.jpeg alt="POWER BANK 8817 132">
+    <h3>POWER BANK 8817 </h3>
+    <p>R$ 38,00</p>
+    <input type="number" id="POWER BANK 8817 132" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK 8817 132', 38, 'POWER BANK 8817 132')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/E82YDhV.jpeg alt="POWER BANK 12048 133">
+    <h3>POWER BANK 12048 </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="POWER BANK 12048 133" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK 12048 133', 35, 'POWER BANK 12048 133')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/G40R9qR.jpeg alt="POWER BANK 8523 134">
+    <h3>POWER BANK 8523 </h3>
+    <p>R$ 42,00</p>
+    <input type="number" id="POWER BANK 8523 134" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK 8523 134', 42, 'POWER BANK 8523 134')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/5C3DkQE.jpeg alt="POWER BANK 1067 135">
+    <h3>POWER BANK 1067 </h3>
+    <p>R$ 38,00</p>
+    <input type="number" id="POWER BANK 1067 135" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK 1067 135', 38, 'POWER BANK 1067 135')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/z3Jadb7.jpeg alt="POWER BANK 20.000 136">
+    <h3>POWER BANK 20.000</h3>
+    <p>R$ 75,00</p>
+    <input type="number" id="POWER BANK 20.000 136" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK 20.000 136', 75, 'POWER BANK 20.000 136')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/lhtebU4.jpeg alt="POWER BANK 7578 137">
+    <h3>POWER BANK 7578 </h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="POWER BANK 7578 137 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK 7578 137', 20, 'POWER BANK 7578 137')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONTE">
+    <img src=https://i.imgur.com/Zn8HN7I.jpeg alt="FONTE UNIVERSAL PARA NOTEBOOK 7007 138">
+    <h3>FONTE UNIVERSAL PARA NOTEBOOK 7007</h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="FONTE UNIVERSAL PARA NOTEBOOK 7007 138 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONTE UNIVERSAL PARA NOTEBOOK 7007 138', 30, 'FONTE UNIVERSAL PARA NOTEBOOK 7007 138')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONTE">
+    <img src=https://i.imgur.com/yvPwQKg.jpeg alt="FONTE 1180 12V 139">
+    <h3>FONTE 1180 12V</h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="FONTE 1180 12V 139" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONTE 1180 12V 139', 13, 'FONTE 1180 12V 139')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/DcXqzgX.jpeg alt="CARREGADOR AUTOMOTIVO 2049 V8 140">
+    <h3>CARREGADOR AUTOMOTIVO 2049 V8 </h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO 2049 V8 140 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO 2049 V8 140', 8.50, 'CARREGADOR AUTOMOTIVO 2049 V8 140')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/DcXqzgX.jpeg alt="CARREGADOR AUTOMOTIVO 2049 TIPO C 141">
+    <h3>CARREGADOR AUTOMOTIVO 2049 TIPO C </h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO 2049 TIPO C 141 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO 2049 TIPO C 141', 8.50, 'CARREGADOR AUTOMOTIVO 2049 TIPO C 141')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/kWKtkFZ.jpeg alt="CARREGADOR AUTOMOTIVO 5111 142">
+    <h3>CARREGADOR AUTOMOTIVO 5111</h3>
+    <p>R$ 10,00</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO 5111 142" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO 5111 142', 10, 'CARREGADOR AUTOMOTIVO 5111 142')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONTE">
+    <img src=https://i.imgur.com/PqPJu6Y.jpeg alt="FONTE USB C 143">
+    <h3>FONTE USB C </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="FONTE USB C 143" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONTE USB C 143', 15, 'FONTE USB C 143')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONTE">
+    <img src=https://i.imgur.com/Qh93J0C.jpeg alt="FONTE GLO8 USB 144">
+    <h3>FONTE GLO8 USB </h3>
+    <p>R$ 9,50</p>
+    <input type="number" id="FONTE GLO8 USB 144" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONTE GLO8 USB 144', 9.50, 'FONTE GLO8 USB 144')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/idckNl9.jpeg alt="CARREGADOR AUTOMOTIVO V8  145">
+    <h3>CARREGADOR AUTOMOTIVO V8  </h3>
+    <p>R$ 13,50</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO V8  145" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO V8  145', 13.50, 'CARREGADOR AUTOMOTIVO V8  145')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/idckNl9.jpeg alt="CARREGADOR AUTOMOTIVO TIPO C 146">
+    <h3>CARREGADOR AUTOMOTIVO TIPO C  </h3>
+    <p>R$ 13,50</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO TIPO C 146" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO TIPO C 146', 13.50, 'CARREGADOR AUTOMOTIVO TIPO C 146')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/idckNl9.jpeg alt="CARREGADOR AUTOMOTIVO IPHONE 147">
+    <h3>CARREGADOR AUTOMOTIVO IPHONE </h3>
+    <p>R$ 13,50</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO IPHONE 147" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO IPHONE 147', 13, 'CARREGADOR AUTOMOTIVO IPHONE 147')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/BMmwiE9.jpeg alt="CARREGADOR AUTOMOTIVO GLO8 USB C  148">
+    <h3>CARREGADOR AUTOMOTIVO GLO8 USB C </h3>
+    <p>R$ 19,00</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO GLO8 USB C  148" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO GLO8 USB C  148', 19, 'CARREGADOR AUTOMOTIVO GLO8 USB C  148')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/BMmwiE9.jpeg alt="CARREGADOR AUTOMOTIVO GLO8 TIPO C 149">
+    <h3>CARREGADOR AUTOMOTIVO GLO8 TIPO C </h3>
+    <p>R$ 19,00</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO GLO8 TIPO C 149" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO GLO8 TIPO C 149', 19,00, 'CARREGADOR AUTOMOTIVO GLO8 TIPO C 149')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/BMmwiE9.jpeg alt="CARREGADOR AUTOMOTIVO GLO8 IPHONE 150">
+    <h3>CARREGADOR AUTOMOTIVO GLO8 IPHONE</h3>
+    <p>R$ 19,00</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO GLO8 IPHONE 150 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO GLO8 IPHONE 150', 19, CARREGADOR AUTOMOTIVO GLO8 IPHONE 150')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/E4GeaUU.jpeg alt="CARREGADOR AUTOMOTIVO 0048 V8 151">
+    <h3>CARREGADOR AUTOMOTIVO 0048 V8  </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO 0048 V8 151 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO 0048 V8 151 ', 16, 'CARREGADOR AUTOMOTIVO 0048 V8 151')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/E4GeaUU.jpeg alt="CARREGADOR AUTOMOTIVO 0048 TIPO C 152">
+    <h3>CARREGADOR AUTOMOTIVO 0048 TIPO C   </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO 0048 TIPO C 152 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO 0048 TIPO C 152 ', 16, 'CARREGADOR AUTOMOTIVO 0048 TIPO C 152 ')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/43BbFpv.jpeg alt="Produto 153">
+    <h3>Produto 03</h3>
+    <p>R$ 450,00</p>
+    <input type="number" id="produto 153" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 03', 450, 'produto 153')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/QrMt2Ik.jpeg alt="Produto 154">
+    <h3>Produto 04</h3>
+    <p>R$ 500,00</p>
+    <input type="number" id="produto 154" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 154', 500, 'produto 154')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/cWo9RUq.jpeg alt="SUPORTE 7027 155">
+    <h3>SUPORTE 7027 </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="SUPORTE 7027 155" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 7027 155', 12, 'SUPORTE 7027 155')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/P9J0lza.jpeg alt="SUPORTE 7188 156">
+    <h3>SUPORTE 7188</h3>
+    <p>R$ 5,00</p>
+    <input type="number" id="SUPORTE 7188 156" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 7188 156', 5, 'SUPORTE 7188 156')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/G7U7txL.jpeg alt="SUPORTE 8683 157">
+    <h3>SUPORTE 8683 </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="SUPORTE 8683 157" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 8683 157', 12, 'SUPORTE 8683 157')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/dDF5zjL.jpeg alt="SUPORTE 7535 158">
+    <h3>SUPORTE 7535 </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="SUPORTE 7535 158" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 7535 158', 15, 'SUPORTE 7535 158')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/H1nITQF.jpeg alt="SUPORTE 297 159">
+    <h3>SUPORTE 297 </h3>
+    <p>R$ 11,50</p>
+    <input type="number" id="SUPORTE 297 159" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 297 159', 11.50, 'SUPORTE 297 159')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/cGZzZtU.jpeg alt="SUPORTE C027 160">
+    <h3>SUPORTE C027 </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="SUPORTE C027 160" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE C027 160', 12, 'SUPORTE C027 160')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/9hmSZJT.jpeg alt="SUPORTE 5939 161">
+    <h3>SUPORTE 5939 </h3>
+    <p>R$ 13,50</p>
+    <input type="number" id="SUPORTE 5939 161" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 5939 161', 13.50, 'SUPORTE 5939 161')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/ACM41VM.jpeg alt="SUPORTE 7536 162">
+    <h3>SUPORTE 7536 </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="SUPORTE 7536 162" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 7536 162', 16, 'SUPORTE 7536 162')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/41v5os6.jpeg alt="SUPORTE 049 163">
+    <h3>SUPORTE 049 </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="SUPORTE 049 163" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 049 163', 12, 'SUPORTE 049 163')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/2Ey9azI.jpeg alt="SUPORTE 30086 164">
+    <h3>SUPORTE 30086 </h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="SUPORTE 30086 164" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 30086 164', 20, 'SUPORTE 30086 164')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/4eodv3m.jpeg alt="SUPORTE 7576 165">
+    <h3>SUPORTE 7576 </h3>
+    <p>R$ 4,50</p>
+    <input type="number" id="SUPORTE 7576 165" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 7576 165', 4.50, 'SUPORTE 7576 165')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/WyMBIPW.jpeg alt="SUPORTE 047 166">
+    <h3>SUPORTE 047 </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="SUPORTE 047 166" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 047 166', 16, 'SUPORTE 047 166')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/mVnWx6J.jpeg alt="SUPORTE COM CARREGADOR  167">
+    <h3>SUPORTE COM CARREGADOR </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="SUPORTE COM CARREGADOR  167" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE COM CARREGADOR  167', 25, 'SUPORTE COM CARREGADOR  167')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/cAMsa5V.jpeg alt="SUPORTE 2313 168">
+    <h3>SUPORTE 2313 </h3>
+    <p>R$ 11,00</p>
+    <input type="number" id="SUPORTE 2313 168" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 2313 168', 11, 'SUPORTE 2313 168')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/CgUsMda.jpeg alt="SUPORTE C098 169">
+    <h3>SUPORTE C098</h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="SUPORTE C098 169" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE C098 169', 16, 'SUPORTE C098 169')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/Et88HeD.jpeg alt="SUPORTE 7036 170">
+    <h3>SUPORTE 7036 </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="SUPORTE 7036 170" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 7036 170', 8, 'SUPORTE 7036 170')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/s8EobLP.jpeg alt="SUPORTE 7037 171">
+    <h3>SUPORTE 7037 </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="SUPORTE 7037 171" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 7037 171', 15, 'SUPORTE 7037 171')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="SUPORTES">
+    <img src=https://i.imgur.com/ZhpI83v.jpeg alt="SUPORTE 043 172">
+    <h3>SUPORTE 043 </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="SUPORTE 043 172" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SUPORTE 043 172', 15, 'SUPORTE 043 172')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/JWiqQ4R.jpeg alt="LANTERNA LED USB 9960 173">
+    <h3>LANTERNA LED USB 9960</h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="LANTERNA LED USB 9960 173" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA LED USB 9960 173', 20, 'LANTERNA LED USB 9960 173')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/PVPdkKY.jpeg alt="LANTERNA DE CABEÇA 9962 174">
+    <h3>LANTERNA DE CABEÇA 9962</h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="LANTERNA DE CABEÇA 9962 174" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA DE CABEÇA 9962 174', 13, 'LANTERNA DE CABEÇA 9962 174')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/EhyrbRO.jpeg alt="LANTERNA 7020 175">
+    <h3>LANTERNA 7020 </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="LANTERNA 7020 175" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 7020 175', 5.50, 'LANTERNA 7020 175')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/pYu40L2.jpeg alt="LANTERNA 9958 176">
+    <h3>LANTERNA 9958 </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="LANTERNA 9958 176" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 9958 176', 25, 'LANTERNA 9958 176')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/5lXq2ln.jpeg alt="LANTERNA 7006 177">
+    <h3>LANTERNA 7006 </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="LANTERNA 7006 177" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 7006 177', 14, 'LANTERNA 7006 177')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/cc5Oxa6.jpeg alt="LANTERNA DE CABEÇA 1512 178">
+    <h3>LANTERNA DE CABEÇA 1512 </h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="LANTERNA DE CABEÇA 1512 178" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA DE CABEÇA 1512 178', 18, 'LANTERNA DE CABEÇA 1512 178')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/RcrIYzV.jpeg alt="CAIXA DE SOM XTREME 179">
+    <h3>CAIXA DE SOM XTREME </h3>
+    <p>R$ 115,00</p>
+    <input type="number" id="CAIXA DE SOM XTREME 179" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM XTREME 179', 115, 'CAIXA DE SOM XTREME 179')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/2mTwKjI.jpeg alt="LANTERNA 7475 180">
+    <h3>LANTERNA 7475 </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="LANTERNA 7475 180" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 7475 180', 12, 'LANTERNA 7475 180')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/lpddpgY.jpeg alt="LANTERNA 7471 181">
+    <h3>LANTERNA 7471 </h3>
+    <p>R$ 11,00</p>
+    <input type="number" id="LANTERNA 7471 181" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 7471 181', 11, 'LANTERNA 7471 181')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/CWNGd19.jpeg alt="LANTERNA 7477 182">
+    <h3>LANTERNA 7477 </h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="LANTERNA 7477 182" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 7477 182', 18, 'LANTERNA 7477 182')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/6B4FvC9.jpeg alt="LANTERNA 7472 183">
+    <h3>LANTERNA 7472 </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="LANTERNA 7472 183" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 7472 183', 12, 'LANTERNA 7472 183')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/BQnhVN1.jpeg alt="LANTERNA 7469 184">
+    <h3>LANTERNA 7469 </h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="LANTERNA 7469 184" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 7469 184', 18, 'LANTERNA 7469 184')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/pmjnJot.jpeg alt="LANTERNA X900 185">
+    <h3>LANTERNA X900</h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="LANTERNA X900 185" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA X900 185', 35, 'LANTERNA X900 185')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/EzGeoZn.jpeg alt="LANTERNA LAN 7004 186">
+    <h3>LANTERNA LAN 7004</h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="LANTERNA LAN 7004 186" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA LAN 7004 186', 40, 'LANTERNA LAN 7004 186')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/PvjMNBt.jpeg alt="LUMINARIA LED 6734 DE MESA 187">
+    <h3>LUMINARIA LED 6734 DE MESA </h3>
+    <p>R$ 42,00</p>
+    <input type="number" id="LUMINARIA LED 6734 DE MESA 187" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LUMINARIA LED 6734 DE MESA 187', 42, 'LUMINARIA LED 6734 DE MESA 187')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/pRO7XrF.jpeg alt="LUMINARIA LED 6735 DE MESA 188">
+    <h3>LUMINARIA LED 6735 DE MESA </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="LUMINARIA LED 6735 DE MESA 188" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LUMINARIA LED 6735 DE MESA 188', 45, 'LUMINARIA LED 6735 DE MESA 188')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/ucyToKm.jpeg alt="LUMINARIA LED 6737 DE MESA 189">
+    <h3>LUMINARIA LED 6737 DE MESA </h3>
+    <p>R$ 37,00</p>
+    <input type="number" id="LUMINARIA LED 6737 DE MESA 189" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LUMINARIA LED 6737 DE MESA 189', 37, 'LUMINARIA LED 6737 DE MESA 189')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/uiV0JBz.jpeg alt="LUMINARIA LED 6736 DE MESA 190">
+    <h3>LUMINARIA LED 6736 DE MESA </h3>
+    <p>R$ 37,00</p>
+    <input type="number" id="LUMINARIA LED 6736 DE MESA 190" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LUMINARIA LED 6736 DE MESA 190', 37, 'LUMINARIA LED 6736 DE MESA 190')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/aG9yZD9.jpeg alt="LUMINARIA LED 6733 DE MESA 191">
+    <h3>LUMINARIA LED 6733 DE MESA </h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="LUMINARIA LED 6733 DE MESA 191" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LUMINARIA LED 6733 DE MESA 191', 40, 'LUMINARIA LED 6733 DE MESA 191')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/vlcFIMe.jpeg alt="LAMPADADA LED GIRATORIA 192">
+    <h3>LAMPADADA LED GIRATORIA </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="LAMPADADA LED GIRATORIA 192" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LAMPADADA LED GIRATORIA 192', 15, 'LAMPADADA LED GIRATORIA 192')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/oQ4a8yr.jpeg alt="LAMPADADA BALI 2 193">
+    <h3>LAMPADADA BALI 2 </h3>
+    <p>R$ 28,00</p>
+    <input type="number" id="LAMPADADA BALI 2 193" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LAMPADADA BALI 2 193', 28, 'LAMPADADA BALI 2 193')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/DPgvuRY.jpeg alt="RINGLIGHT 12 PL 194">
+    <h3>RINGLIGHT 12 PL </h3>
+    <p>R$ 80,00</p>
+    <input type="number" id="RINGLIGHT 12 PL 194" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RINGLIGHT 12 PL 194', 80, 'RINGLIGHT 12 PL 194')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/kr8VCFB.jpeg alt="RINGLIGHT 10PL 195">
+    <h3>RINGLIGHT 10PL </h3>
+    <p>R$ 90,00</p>
+    <input type="number" id="RINGLIGHT 10PL 195" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RINGLIGHT 10PL 195', 90, 'RINGLIGHT 10PL 195')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/jJ8R99X.jpegalt="RINGLIGHT 6PL RGB 196">
+    <h3>RINGLIGHT 6PL RGB </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="RINGLIGHT 6PL RGB 196" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RINGLIGHT 6PL RGB 196', 35, 'RINGLIGHT 6PL RGB 196')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/cDkrCZA.jpeg alt="RINGLIGHT 6PL 197">
+    <h3>RINGLIGHT 6PL </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="RINGLIGHT 6PL 197" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RINGLIGHT 6PL 197', 25, 'RINGLIGHT 6PL 197')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/pDDcrAU.jpeg alt="RINGLIGHT 10PL 198">
+    <h3>RINGLIGHT 10PL </h3>
+    <p>R$ 55,00</p>
+    <input type="number" id="RINGLIGHT 10PL 198" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RINGLIGHT 10PL 198', 55, 'RINGLIGHT 10PL 198')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/poSunOm.jpeg alt="FITA LED RGB 5 METROS 199">
+    <h3>FITA LED RGB 5 METROS </h3>
+    <p>R$ 42,00</p>
+    <input type="number" id="FITA LED RGB 5 METROS 199" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FITA LED RGB 5 METROS 199', 42, 'FITA LED RGB 5 METROS 199')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/qzX6Pxq.jpeg alt="RADIO 1115 200">
+    <h3>RADIO 1115 </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="RADIO 1115 200" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 1115 200', 25, 'RADIO 1115 200')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/U7U9z0P.jpeg alt="RADIO 856 201">
+    <h3>RADIO 856 </h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="RADIO 856 201" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 856 201', 40, 'RADIO 856 201')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/7fNW7sM.jpeg alt="MINI SPEKER 887 202">
+    <h3>MINI SPEKER 887 </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="MINI SPEKER 887 202" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI SPEKER 887 202', 15, 'MINI SPEKER 887 202')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/7ILfT00.jpeg alt="CAIXA DE SOM 958 203">
+    <h3>CAIXA DE SOM 958</h3>
+    <p>R$ 50,00</p>
+    <input type="number" id="CAIXA DE SOM 958 203" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 958 203', 50, 'CAIXA DE SOM 958 203')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/nIUL1qL.jpeg alt="CAIXA DE SOM 5329 204">
+    <h3>CAIXA DE SOM 5329 </h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="CAIXA DE SOM 5329 204" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 5329 204', 30, 'CAIXA DE SOM 5329 204')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/aut8hEA.jpeg alt="CAIXA DE SOM 8631 205">
+    <h3>CAIXA DE SOM 8631</h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="CAIXA DE SOM 8631 205" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 8631 205', 25, 'CAIXA DE SOM 8631 205')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/2tzjhOZ.jpeg alt="MINI CAIXA DE SOM 8621 206">
+    <h3>MINI CAIXA DE SOM 8621</h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="MINI CAIXA DE SOM 8621 206" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM 8621 206', 35, 'MINI CAIXA DE SOM 8621 206')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/FiLvfZ5.jpeg alt="MINI CAIXA DE SOM 8624 207">
+    <h3>MINI CAIXA DE SOM 8624</h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="MINI CAIXA DE SOM 8624 207" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM 8624 207', 35, 'MINI CAIXA DE SOM 8624 207')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/Vtz5kft.jpeg alt="MINI CAIXA DE SOM SEM FIO 9871 208">
+    <h3>MINI CAIXA DE SOM SEM FIO 9871 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="MINI CAIXA DE SOM SEM FIO 9871 208" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM SEM FIO 9871 208', 45, 'MINI CAIXA DE SOM SEM FIO 9871 208')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/0zph32R.jpeg alt="CAIXA DE SOM 11105 209">
+    <h3>CAIXA DE SOM 11105 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="CAIXA DE SOM 11105 209" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 11105 209', 45, 'CAIXA DE SOM 11105 209')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/7EBfZUC.jpeg alt="CAIXA DE SOM 8642 210">
+    <h3>CAIXA DE SOM 8642 </h3>
+    <p>R$ 100,00</p>
+    <input type="number" id="CAIXA DE SOM 8642 210" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 8642 210', 100, 'CAIXA DE SOM 8642 210')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/gqpdIMw.jpeg alt="CAIXA DE SOM PORTATIL 838 211">
+    <h3>CAIXA DE SOM PORTATIL 838</h3>
+    <p>R$ 110,00</p>
+    <input type="number" id="CAIXA DE SOM PORTATIL 838 211" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM PORTATIL 838 211', 110, 'CAIXA DE SOM PORTATIL 838 211')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/xvKSRhr.jpeg alt="CAIXA DE SOM 1018 212">
+    <h3>CAIXA DE SOM 1018 </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="CAIXA DE SOM 1018 212" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 1018 212', 15, 'CAIXA DE SOM 1018 212')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/9yMBUJV.jpeg alt="MINI CAIXA DE SOM SEM FIO 9888 213">
+    <h3>MINI CAIXA DE SOM SEM FIO 9888 </h3>
+    <p>R$ 65,00</p>
+    <input type="number" id="MINI CAIXA DE SOM SEM FIO 9888 213" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM SEM FIO 9888 213', 65, 'MINI CAIXA DE SOM SEM FIO 9888 213')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/JepGr3u.jpeg alt="MINI CAIXA DE SOM 9787 214">
+    <h3>MINI CAIXA DE SOM 9787 </h3>
+    <p>R$ 70,00</p>
+    <input type="number" id="MINI CAIXA DE SOM 9787 214" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM 9787 214', 70, 'MINI CAIXA DE SOM 9787 214')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/vbT2DT0.jpeg alt="RADIO 1088 215">
+    <h3>RADIO 1088</h3>
+    <p>R$ 60,00</p>
+    <input type="number" id="RADIO 1088 215" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 1088 215', 60, 'RADIO 1088 215')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/LMvPQBo.jpeg alt="RADIO 8394 216">
+    <h3>RADIO 8394</h3>
+    <p>R$ 75,00</p>
+    <input type="number" id="RADIO 8394 216" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 8394 216', 75, 'RADIO 8394 216')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/labl0pU.jpeg alt="RADIO 136 217">
+    <h3>RADIO 136</h3>
+    <p>R$ 75,00</p>
+    <input type="number" id="RADIO 136 217" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 136 217', 75, 'RADIO 136 217')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/1zhqEPR.jpeg alt="RADIO A 208 218">
+    <h3>RADIO A 208 </h3>
+    <p>R$ 65,00</p>
+    <input type="number" id="RADIO A 208 218" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO A 208 218', 65, 'RADIO A 208 218')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/10SMwdB.jpeg alt="CAIXA DE SOM 826 219">
+    <h3>CAIXA DE SOM 826 </h3>
+    <p>R$ 190,00</p>
+    <input type="number" id="CAIXA DE SOM 826 219" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 826 219', 190, 'CAIXA DE SOM 826 219')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/TAe6u8t.jpeg alt="RADIO 3199 220">
+    <h3>RADIO 3199</h3>
+    <p>R$ 75,00</p>
+    <input type="number" id="RADIO 3199 220" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 3199 220', 75, 'RADIO 3199 220')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/MfZRgg6.jpeg alt="MINI CAIXA DE SOM PORTÁTIL 8657 221">
+    <h3>MINI CAIXA DE SOM PORTÁTIL 8657</h3>
+    <p>R$ 80,00</p>
+    <input type="number" id="MINI CAIXA DE SOM PORTÁTIL 8657 221" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM PORTÁTIL 8657 221', 80, 'MINI CAIXA DE SOM PORTÁTIL 8657 221')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/6kFTffx.jpeg alt="MINI CAIXA DE SOM PORTÁTIL 9041 222">
+    <h3>MINI CAIXA DE SOM PORTÁTIL 9041 </h3>
+    <p>R$ 42,00</p>
+    <input type="number" id="MINI CAIXA DE SOM PORTÁTIL 9041 222" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM PORTÁTIL 9041 222', 42, 'MINI CAIXA DE SOM PORTÁTIL 9041 222')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/ZNyuM4X.jpeg alt="MINI CAIXA DE SOM 11008 223">
+    <h3>MINI CAIXA DE SOM 11008 </h3>
+    <p>R$ 70,00</p>
+    <input type="number" id="MINI CAIXA DE SOM 11008 223" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM 11008 223', 70, 'MINI CAIXA DE SOM 11008 223')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/z1LDI4Z.jpeg alt="BOMBOX 2 224">
+    <h3>BOMBOX 2 </h3>
+    <p>R$ 185,00</p>
+    <input type="number" id="BOMBOX 2 224" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('BOMBOX 2 224', 185, 'BOMBOX 2 224')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/gudqkU6.jpeg alt="MINI BOMBOX 225">
+    <h3>MINI BOMBOX </h3>
+    <p>R$ 85,00</p>
+    <input type="number" id="MINI BOMBOX 225" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI BOMBOX 225', 85, 'MINI BOMBOX 225')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/5P2hEC5.jpeg alt="CAIXA DE SOM CHARGE 3 226">
+    <h3>CAIXA DE SOM CHARGE 3 </h3>
+    <p>R$ 65,00</p>
+    <input type="number" id="CAIXA DE SOM CHARGE 3 226" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM CHARGE 3 226', 65, 'CAIXA DE SOM CHARGE 3 226')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/TYMvJjk.jpeg alt="CAIXA DE SOM 1112 227">
+    <h3>CAIXA DE SOM 1112 </h3>
+    <p>R$ 200,00</p>
+    <input type="number" id="CAIXA DE SOM 1112 227" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 1112 227', 200, 'CAIXA DE SOM 1112 227')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/87v54yC.jpeg alt="CAIXA DE SOM CHARGE 2 228">
+    <h3>CAIXA DE SOM CHARGE 2 </h3>
+    <p>R$ 50,00</p>
+    <input type="number" id="CAIXA DE SOM CHARGE 2 228" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM CHARGE 2 228', 50, 'CAIXA DE SOM CHARGE 2 228')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/mbgx47Q.jpeg alt="CAIXA DE SOM MINI 3 229">
+    <h3>CAIXA DE SOM MINI 3 </h3>
+    <p>R$ 38,00</p>
+    <input type="number" id="CAIXA DE SOM MINI 3 229" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM MINI 3 229', 38, 'CAIXA DE SOM MINI 3 229')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/66XpHnn.jpeg alt="MINI CAIXA DE SOM 8628 230">
+    <h3>MINI CAIXA DE SOM 8628</h3>
+    <p>R$ 125,00</p>
+    <input type="number" id="MINI CAIXA DE SOM 8628 230" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM 8628 230', 125, 'MINI CAIXA DE SOM 8628 230')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/RzXTClz.jpeg alt="CAIXA DE SOM 8166 231">
+    <h3>CAIXA DE SOM 8166</h3>
+    <p>R$ 95,00</p>
+    <input type="number" id="CAIXA DE SOM 8166 231" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 8166 231', 95, 'CAIXA DE SOM 8166 231')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/EaY2JX4.jpeg alt="CAIXA DE SOM GO2 PRO 232">
+    <h3>CAIXA DE SOM GO2 PRO </h3>
+    <p>R$ 38,00</p>
+    <input type="number" id="CAIXA DE SOM GO2 PRO 232" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM GO2 PRO 232', 38, 'CAIXA DE SOM GO2 PRO 232')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/Z0AUEC5.jpeg alt="CAIXA DE SOM 1300 233">
+    <h3>CAIXA DE SOM 1300</h3>
+    <p>R$ 200,00</p>
+    <input type="number" id="CAIXA DE SOM 1300 233" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 1300 233', 200, 'CAIXA DE SOM 1300 233')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/HS0Rn4M.jpeg alt="MINI CAIXA DE SOM SEM FIO KV 9884 234">
+    <h3>MINI CAIXA DE SOM SEM FIO KV 9884 </h3>
+    <p>R$ 70,00</p>
+    <input type="number" id="MINI CAIXA DE SOM SEM FIO KV 9884 234" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM SEM FIO KV 9884 234', 70, 'MINI CAIXA DE SOM SEM FIO KV 9884 234')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/GPA8qyJ.jpeg alt="MINI CAIXA DE SOM SEM FIO 9893 235">
+    <h3>MINI CAIXA DE SOM SEM FIO 9893</h3>
+    <p>R$ 110,00</p>
+    <input type="number" id="MINI CAIXA DE SOM SEM FIO 9893 235" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM SEM FIO 9893 235', 110, 'MINI CAIXA DE SOM SEM FIO 9893 235')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/rtY0TI3.jpeg alt="RADIO SEM FIO 1115 236">
+    <h3>RADIO SEM FIO 1115</h3>
+    <p>R$ 80,00</p>
+    <input type="number" id="RADIO SEM FIO 1115 236" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO SEM FIO 1115 236', 80, 'RADIO SEM FIO 1115 236')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/DnVWay3.jpeg alt="RADIO 11025 237">
+    <h3>RADIO 11025</h3>
+    <p>R$ 70,00</p>
+    <input type="number" id="RADIO 11025 237" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 11025 237', 70, 'RADIO 11025 237')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/3fqrK3S.jpeg alt="MINI CAIXA DE SOM 11068 238">
+    <h3>MINI CAIXA DE SOM 11068 </h3>
+    <p>R$ 70,00</p>
+    <input type="number" id="MINI CAIXA DE SOM 11068 238" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM 11068 238', 70, 'MINI CAIXA DE SOM 11068 238')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/v037noG.jpeg alt="CAIXA DE SOM 239">
+    <h3>CAIXA DE SOM </h3>
+    <p>R$ 00,00</p>
+    <input type="number" id="CAIXA DE SOM 239" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 239', 00, 'CAIXA DE SOM 239')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/ysQ9xIK.jpeg alt="CAIXA DE SOM 240">
+    <h3>CAIXA DE SOM </h3>
+    <p>R$ 00,00</p>
+    <input type="number" id="CAIXA DE SOM 240" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 240', 00, 'CAIXA DE SOM 240')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/i4a0VXl.jpeg alt="MINI CAIXA DE SOM 8628 241">
+    <h3>MINI CAIXA DE SOM 8628</h3>
+    <p>R$ 115,00</p>
+    <input type="number" id="MINI CAIXA DE SOM 8628 241" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM 8628 241', 115, 'MINI CAIXA DE SOM 8628 241')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/XtP1WO4.jpeg alt="MINI CAIXA DE SOM  9028 242">
+    <h3>MINI CAIXA DE SOM  9028</h3>
+    <p>R$ 26,00</p>
+    <input type="number" id="MINI CAIXA DE SOM  9028 242" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM  9028 242', 26, 'MINI CAIXA DE SOM  9028 242')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/9jQxJup.jpeg alt="CAIXA DE SOM PORTÁTIL 243">
+    <h3>CAIXA DE SOM PORTÁTIL </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="CAIXA DE SOM PORTÁTIL 243" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM PORTÁTIL 243', 45, 'CAIXA DE SOM PORTÁTIL 243')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/aiuysBk.jpeg alt="CAIXAS DE SOM 244">
+    <h3>CAIXAS DE SOM </h3>
+    <p>R$ 00,00</p>
+    <input type="number" id="CAIXAS DE SOM 244" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXAS DE SOM 244', 00, 'CAIXAS DE SOM 244')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/NJd6sQn.jpeg alt="CAIXA DE SOM RESISTENTE A ÁGUA 11021 245">
+    <h3>CAIXA DE SOM RESISTENTE A ÁGUA 11021</h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="CAIXA DE SOM RESISTENTE A ÁGUA 11021 245" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM RESISTENTE A ÁGUA 11021 245', 45, 'CAIXA DE SOM RESISTENTE A ÁGUA 11021 245')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/iciWiJk.jpeg alt="TV BOX MX 246">
+    <h3>TV BOX MX </h3>
+    <p>R$ 90,00</p>
+    <input type="number" id="TV BOX MX 246" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('TV BOX MX 246', 90, 'TV BOX MX 246')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/rGJ7MSg.jpeg alt="CONVERSOR DIGITAL DIG 7020 247">
+    <h3>CONVERSOR DIGITAL DIG 7020</h3>
+    <p>R$ 75,00</p>
+    <input type="number" id="CONVERSOR DIGITAL DIG 7020 247" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONVERSOR DIGITAL DIG 7020 247', 75, 'CONVERSOR DIGITAL DIG 7020 247')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/2IhoLfB.jpeg alt="MINI TECLADO 248">
+    <h3>MINI TECLADO </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="MINI TECLADO 248" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI TECLADO 248', 25, 'MINI TECLADO 248')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/bDiSUMJ.jpeg alt="MINI CAIXA DE SOM RADIO 9788 249">
+    <h3>MINI CAIXA DE SOM RADIO 9788</h3>
+    <p>R$ 100,00</p>
+    <input type="number" id="MINI CAIXA DE SOM RADIO 9788 249" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM RADIO 9788 249', 100, 'MINI CAIXA DE SOM RADIO 9788 249')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/BbBw8PX.jpeg alt="CAIXA DE SOM 1710 250">
+    <h3>CAIXA DE SOM 1710 </h3>
+    <p>R$ 130,00</p>
+    <input type="number" id="CAIXA DE SOM 1710 250" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM 1710 250', 130, 'CAIXA DE SOM 1710 250')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/L0lbn7h.jpeg alt="RADIO 11246 251">
+    <h3>RADIO 11246</h3>
+    <p>R$ 65,00</p>
+    <input type="number" id="RADIO 11246 251" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 11246 251', 65, 'RADIO 11246 251')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/0U6jKVb.jpeg alt="RADIO 078 252">
+    <h3>RADIO 078 </h3>
+    <p>R$ 55,00</p>
+    <input type="number" id="RADIO 078 252" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 078 252', 55, 'RADIO 078 252')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/G5Jy9YF.jpeg alt="MEGAFONE KD 150 253">
+    <h3>MEGAFONE KD 150</h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="MEGAFONE KD 150 253" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MEGAFONE KD 150 253', 35, 'MEGAFONE KD 150 253')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/nEMLwey.jpeg alt="RADIO 7368 254">
+    <h3>RADIO 7368</h3>
+    <p>R$ 00,00</p>
+    <input type="number" id="RADIO 7368 254" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO 7368 254', 00, 'RADIO 7368 254')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/2eMha6i.jpeg alt="RADIO AB05 255">
+    <h3>RADIO AB05 </h3>
+    <p>R$ 60,00</p>
+    <input type="number" id="RADIO AB05 255" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO AB05 255', 60, 'RADIO AB05 255')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/NEksN6e.jpeg alt="FUSCA 576 256">
+    <h3>FUSCA 576 </h3>
+    <p>R$ 80,00</p>
+    <input type="number" id="FUSCA 576 256" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FUSCA 576 256', 80, 'FUSCA 576 256')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/G48JUeN.jpeg alt="CARRO 1955 257">
+    <h3>CARRO 1955</h3>
+    <p>R$ 80,00</p>
+    <input type="number" id="CARRO 1955 257" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARRO 1955 257', 80, 'CARRO 1955 257')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/kBuTFOH.jpeg alt="CAMINHÃO 528 258">
+    <h3>CAMINHÃO 528</h3>
+    <p>R$ 80,00</p>
+    <input type="number" id="CAMINHÃO 528 258" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAMINHÃO 528 258', 80, 'CAMINHÃO 528 258')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/7GeYpEo.jpeg alt="CAIXA DE SOM G COM RELOGIO 259">
+    <h3>CAIXA DE SOM G COM RELOGIO </h3>
+    <p>R$ 95,00</p>
+    <input type="number" id="CAIXA DE SOM G COM RELOGIO 259" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM G COM RELOGIO 259', 95, 'CAIXA DE SOM G COM RELOGIO 259')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/wZjr9qj.jpeg alt="MICROFONE SEM FIO 1816 260">
+    <h3>MICROFONE SEM FIO 1816</h3>
+    <p>R$ 50,00</p>
+    <input type="number" id="MICROFONE SEM FIO 1816 260" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MICROFONE SEM FIO 1816 260', 50, 'MICROFONE SEM FIO 1816 260')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/04NOSzk.jpeg alt="MINI CAIXA DE SOM RADIO Q3 261">
+    <h3>MINI CAIXA DE SOM RADIO Q3</h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="MINI CAIXA DE SOM RADIO Q3 261" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MINI CAIXA DE SOM RADIO Q3 261', 30, 'MINI CAIXA DE SOM RADIO Q3 261')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/nVqePwC.jpeg alt="CILP 4 262">
+    <h3>CILP 4 </h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="CILP 4 262" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CILP 4 262', 40, 'CILP 4 262')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/5u1Gsfq.jpeg alt="CILP 5 263">
+    <h3>CILP 5 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="CILP 5 263" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CILP 5 263', 45, 'CILP 5 263')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/9ULqTYv.jpeg alt="CAIXA DE SOM SEM FIO 1509 264">
+    <h3>CAIXA DE SOM SEM FIO 1509 </h3>
+    <p>R$ 170,00</p>
+    <input type="number" id="CAIXA DE SOM SEM FIO 1509 264" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAIXA DE SOM SEM FIO 1509 264', 170, 'CAIXA DE SOM SEM FIO 1509 264')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CAIXA DE SOM">
+    <img src=https://i.imgur.com/LGh49pC.jpeg alt="COMBI 265">
+    <h3>COMBI </h3>
+    <p>R$ 78,00</p>
+    <input type="number" id="COMBI 265" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('COMBI 265', 78, 'COMBI 265')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/QSz6jo5.jpeg alt="ASTRONAUTA 121 266">
+    <h3>ASTRONAUTA 121 </h3>
+    <p>R$ 75,00</p>
+    <input type="number" id="ASTRONAUTA 121 266" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('ASTRONAUTA 121 266', 75, 'ASTRONAUTA 121 266')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/w5yv9ZK.jpeg alt="AMPILFICADOR DE TELA 267">
+    <h3>AMPILFICADOR DE TELA </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="AMPILFICADOR DE TELA 267" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('AMPILFICADOR DE TELA 267', 15, 'AMPILFICADOR DE TELA 267')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/JqPFiTq.jpeg alt="LOUÇA MAGICA 10PL 268">
+    <h3>LOUÇA MAGICA 10PL</h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="LOUÇA MAGICA 10PL 268" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LOUÇA MAGICA 10PL 268', 13, 'LOUÇA MAGICA 10PL 268')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/7bRuXsZ.jpeg alt="PISTOLA DE MASSAGEM 350 269">
+    <h3>PISTOLA DE MASSAGEM 350 </h3>
+    <p>R$ 65,00</p>
+    <input type="number" id="PISTOLA DE MASSAGEM 350 269" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('PISTOLA DE MASSAGEM 350 269', 65, 'PISTOLA DE MASSAGEM 350 269')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/MsoJax0.jpeg alt="GLOBO 30087 270">
+    <h3>GLOBO 30087 </h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="GLOBO 30087 270" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GLOBO 30087 270', 7.50, 'GLOBO 30087 270')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/U1Hec01.jpeg alt="CALCULADORA 7089 271">
+    <h3>CALCULADORA 7089 </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CALCULADORA 7089 271" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CALCULADORA 7089 271', 5.50, 'CALCULADORA 7089 271')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/5DvN8uW.jpeg alt="CALCULADORA 7080 272">
+    <h3>CALCULADORA 7080</h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="CALCULADORA 7080 272" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CALCULADORA 7080 272', 13, 'CALCULADORA 7080 272')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/CNwfkBv.jpeg alt="CALCULADORA 30109 273">
+    <h3>CALCULADORA 30109</h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="CALCULADORA 30109 273" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CALCULADORA 30109 273', 13, 'CALCULADORA 30109 273')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/r0wTaN8.jpeg alt="CONTROLE TV BOX 274">
+    <h3>CONTROLE TV BOX </h3>
+    <p>R$ 7,50</p>
+    <input type="number" id="CONTROLE TV BOX 274" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE TV BOX 274', 7.50, 'CONTROLE TV BOX 274')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/rEqjl5I.jpeg alt="TECLADO COM FIO 275">
+    <h3>TECLADO COM FIO </h3>
+    <p>R$ 27,00</p>
+    <input type="number" id="TECLADO COM FIO 275" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('TECLADO COM FIO 275', 27, 'TECLADO COM FIO 275')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/82WP9KU.jpeg alt="TECLADO SEM FIO 276">
+    <h3>TECLADO SEM FIO </h3>
+    <p>R$ 55,00</p>
+    <input type="number" id="TECLADO SEM FIO 276" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('TECLADO SEM FIO 276', 55, 'TECLADO SEM FIO 276')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/D6laXI1.jpeg alt="TECLADO COM MOUSE GAMER 278">
+    <h3>TECLADO COM MOUSE GAMER </h3>
+    <p>R$ 50,00</p>
+    <input type="number" id="TECLADO COM MOUSE GAMER 278" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('TECLADO COM MOUSE GAMER 278', 50, 'TECLADO COM MOUSE GAMER 278')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/12UtWjx.jpeg alt="TECLADO DE UMA MÃO KEY 9968 279">
+    <h3>TECLADO DE UMA MÃO KEY 9968</h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="TECLADO DE UMA MÃO KEY 9968 279" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('TECLADO DE UMA MÃO KEY 9968 279', 45, 'TECLADO DE UMA MÃO KEY 9968 279')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/01exD23.jpeg alt="TECLADO B27 280">
+    <h3>TECLADO B27 </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="TECLADO B27 280" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('TECLADO B27 280', 35, 'TECLADO B27 280')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/r5cF4wD.jpeg alt="TECLADO KEY 8389 281">
+    <h3>TECLADO KEY 8389</h3>
+    <p>R$ 65,00</p>
+    <input type="number" id="TECLADO KEY 8389 281" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('TECLADO KEY 8389 281', 65, 'TECLADO KEY 8389 281')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/KkxPujI.jpeg alt="TECLADO KEY 8773 282">
+    <h3>TECLADO KEY 8773</h3>
+    <p>R$ 65,00</p>
+    <input type="number" id="TECLADO KEY 8773 282" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('TECLADO KEY 8773 282', 65, 'TECLADO KEY 8773 282')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/WFpDzuv.jpeg alt="CONTROLE PS2 SEM FIO 283">
+    <h3>CONTROLE PS2 SEM FIO </h3>
+    <p>R$ 38,00</p>
+    <input type="number" id="CONTROLE PS2 SEM FIO 283" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE PS2 SEM FIO 283', 38, 'CONTROLE PS2 SEM FIO 283')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/2e9wa2x.jpeg alt="CONTROLE USB 2D 284">
+    <h3>CONTROLE USB 2D </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="CONTROLE USB 2D 284" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE USB 2D 284', 15, 'CONTROLE USB 2D 284')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/Q2xQfFs.jpeg alt="CONTROLE PS2 285">
+    <h3>CONTROLE PS2 </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="CONTROLE PS2 285" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE PS2 285', 25, 'CONTROLE PS2 285')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/GRNaRgc.jpeg alt="CONTROLE PS3 286">
+    <h3>CONTROLE PS3 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="CONTROLE PS3 286" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE PS3 286', 45, 'CONTROLE PS3 286')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/avL608P.jpeg alt="CONTROLE USB 287">
+    <h3>CONTROLE USB </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="CONTROLE USB 287" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE USB 287', 25, 'CONTROLE USB 287')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/XpdgIbQ.jpeg alt="CONTROLE X 360 288">
+    <h3>CONTROLE X 360 </h3>
+    <p>R$ 65,00</p>
+    <input type="number" id="CONTROLE X 360 288" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE X 360 288', 65, 'CONTROLE X 360 288')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/iBt6SMu.jpeg alt="CONTROLE PS2 289">
+    <h3>CONTROLE PS2 </h3>
+    <p>R$ 22,00</p>
+    <input type="number" id="CONTROLE PS2 289" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE PS2 289', 22, 'CONTROLE PS2 289')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/3OesGcg.jpeg alt="CONTROLE PARA CELULAR  2285 290">
+    <h3>CONTROLE PARA CELULAR  2285</h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="CONTROLE PARA CELULAR  2285 290" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE PARA CELULAR  2285 290', 16, 'CONTROLE PARA CELULAR  2285 290')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/CXD1EjT.jpeg alt="CONTROLE SEM FIO PARA CELULAR 8417 291">
+    <h3>CONTROLE SEM FIO PARA CELULAR 8417</h3>
+    <p>R$ 60,00</p>
+    <input type="number" id="CONTROLE SEM FIO PARA CELULAR 8417 291" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CONTROLE SEM FIO PARA CELULAR 8417 291', 60, 'CONTROLE SEM FIO PARA CELULAR 8417 291')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="COPOS">
+    <img src=https://i.imgur.com/K8CUf59.jpeg alt="COPOS STANLEY 500 ML 292">
+    <h3>COPOS STANLEY 500 ML </h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="COPOS STANLEY 500 ML 292" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('COPOS STANLEY 500 ML 292', 18, 'COPOS STANLEY 500 ML 292')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/8GIaYIi.jpeg alt="CANECA STANLEY 293">
+    <h3>CANECA STANLEY </h3>
+    <p>R$ 00,00</p>
+    <input type="number" id="CANECA STANLEY 293" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CANECA STANLEY 293', 450, 'CANECA STANLEY 293')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/yRtxybX.jpeg alt="GARRAFA STANLEY 294">
+    <h3>GARRAFA STANLEY 1 </h3>
+    <p>R$ 00,00</p>
+    <input type="number" id="GARRAFA STANLEY 294" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA STANLEY 294', 500, 'GARRAFA STANLEY 294')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/qMBv4py.jpeg alt="GARRAFA TERMICA 2 295">
+    <h3>GARRAFA TERMICA 2  </h3>
+    <p>R$ 23,00</p>
+    <input type="number" id="GARRAFA TERMICA 2 295" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA 2 295', 23, 'GARRAFA TERMICA 2 295')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/IWXGnQK.jpeg alt="GARRAFAS KIT COM 3 296">
+    <h3>GARRAFAS KIT COM 3 </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="GARRAFAS KIT COM 3 296" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFAS KIT COM 3 296', 25, 'GARRAFAS KIT COM 3 296')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="COPOS">
+    <img src=https://i.imgur.com/B6dmYD9.jpeg alt="COPO COM TAMPA 297">
+    <h3>COPO COM TAMPA </h3>
+    <p>R$ 28,00</p>
+    <input type="number" id="COPO COM TAMPA 297" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('COPO COM TAMPA 297', 28, 'COPO COM TAMPA 297')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="COPOS">
+    <img src=https://i.imgur.com/wDOjN2l.jpeg alt="COPO CUIA 298">
+    <h3>COPO CUIA </h3>
+    <p>R$ 28,00</p>
+    <input type="number" id="COPO CUIA 298" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('COPO CUIA 298', 28, 'COPO CUIA 298')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="COPOS">
+    <img src=https://i.imgur.com/ArLyRS4.jpeg alt="LONGE NEK COM 2 TAMPAS 289">
+    <h3>LONGE NEK COM 2 TAMPAS </h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="LONGE NEK COM 2 TAMPAS 289" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LONGE NEK COM 2 TAMPAS 289', 30, 'LONGE NEK COM 2 TAMPAS 289')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/ZNzVG0I.jpeg alt="GARRAFA TERMICA 3 290">
+    <h3>GARRAFA TERMICA 3 </h3>
+    <p>R$ 32,00</p>
+    <input type="number" id="pGARRAFA TERMICA 3 290" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA 3 290', 32, 'GARRAFA TERMICA 3 290')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/BbApAe0.jpeg alt="GARRAFA TERMICA 4 291">
+    <h3>GARRAFA TERMICA 4 </h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="GARRAFA TERMICA 4 291" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA 4 291', 30, 'GARRAFA TERMICA 4 291')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/jdFCEwy.jpeg alt="GARRAFA TERMICA 5 292">
+    <h3>GARRAFA TERMICA 5 </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="GARRAFA TERMICA 5 292" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA 5 292', 35, 'GARRAFA TERMICA 5 292')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/2n0ziGW.jpeg alt="GARRAFA TERMICA 6 293">
+    <h3>GARRAFA TERMICA 6 </h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="GARRAFA TERMICA 6 293" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA 6 293', 30, 'GARRAFA TERMICA 6 293')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/RVtykPX.jpeg alt="GARRAFA TERMICA 7 294">
+    <h3>GARRAFA TERMICA 7 </h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="GARRAFA TERMICA 7 294" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA 7 294', 30, 'GARRAFA TERMICA 7 294')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/KZ35Oik.jpeg alt="GARRAFA TERMICA 8 295">
+    <h3>GARRAFA TERMICA 8</h3>
+    <p>R$ 32,00</p>
+    <input type="number" id="GARRAFA TERMICA 8 295" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA 8 295', 32, 'GARRAFA TERMICA 8 295')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/eu9Xoij.jpeg alt="GARRAFA TERMICA  9 296">
+    <h3>GARRAFA TERMICA  9 </h3>
+    <p>R$ 32,00</p>
+    <input type="number" id="GARRAFA TERMICA  9 296" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA  9 296', 32, 'GARRAFA TERMICA  9 296')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/KKTfRCG.jpeg alt="GARRAFA TERMICA 10 297">
+    <h3>GARRAFA TERMICA 10  </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="GARRAFA TERMICA 10 297" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA 10 297', 35, 'GARRAFA TERMICA 10 297')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="GARRAFAS">
+    <img src=https://i.imgur.com/Go8V9it.jpeg alt="GARRAFA TERMICA 11 298">
+    <h3>GARRAFA TERMICA 11 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="GARRAFA TERMICA 11 298" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('GARRAFA TERMICA 11 298', 45, 'GARRAFA TERMICA 11 298')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="COPOS">
+    <img src=https://i.imgur.com/68Kpdcv.jpeg alt="KIT COPO COM 5 PEÇAS 299">
+    <h3>KIT COPO COM 5 PEÇAS </h3>
+    <p>R$ 140,00</p>
+    <input type="number" id="KIT COPO COM 5 PEÇAS 299" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('KIT COPO COM 5 PEÇAS 299', 140, 'KIT COPO COM 5 PEÇAS 299')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/d6Vnplg.jpeg alt="FONE 8616 300">
+    <h3>FONE 8616</h3>
+    <p>R$ 28,00</p>
+    <input type="number" id="FONE 8616 300" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 8616 300', 28, 'FONE 8616 300')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/szHop74.jpeg alt="FONE 2202 301">
+    <h3>FONE 2202</h3>
+    <p>R$ 28,00</p>
+    <input type="number" id="FONE 2202 301" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2202 301', 28, 'FONE 2202 301')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/MTn2Z7h.jpegalt="FONE 6701 302">
+    <h3>FONE 6701 </h3>
+    <p>R$ 28,00</p>
+    <input type="number" id="FONE 6701 302" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 6701 302', 28, 'FONE 6701 302')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/RrH8NRH.jpeg alt="FONE 2126 303">
+    <h3>FONE 2126 </h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="FONE 2126 303" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2126 303', 30, 'FONE 2126 303')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/VoqVPeJ.jpeg alt="FONE 2124 304">
+    <h3>FONE 2124</h3>
+    <p>R$ 33,00</p>
+    <input type="number" id="FONE 2124 304" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2124 304', 33, 'FONE 2124 304')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/ioYxnrj.jpeg alt="FONE 2163 305">
+    <h3>FONE 2163 </h3>
+    <p>R$ 33,00</p>
+    <input type="number" id="FONE 2163 305" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2163 305', 33, 'FONE 2163 305')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/Iu7Zbdx.jpeg alt="FONE 6689 306">
+    <h3>FONE 6689 </h3>
+    <p>R$ 110,00</p>
+    <input type="number" id="FONE 6689 306" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 6689 306', 110, 'FONE 6689 306')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/1pnfH1Q.jpeg alt="FONE 2307 307">
+    <h3>FONE 2307 </h3>
+    <p>R$ 27,00</p>
+    <input type="number" id="FONE 2307 307" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2307 307', 27, 'FONE 2307 307')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/F9rb5tK.jpeg alt="FONE 6708 308">
+    <h3>FONE 6708 </h3>
+    <p>R$ 38,00</p>
+    <input type="number" id="FONE 6708 308" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 6708 308', 38, 'FONE 6708 308')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/BTF8PXO.jpeg alt="FONE  2247 309">
+    <h3>FONE  2247 </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="FONE  2247 309" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE  2247 309', 35, 'FONE  2247 309')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/TXOIeFk.jpeg alt="FONE DODGE G30 310">
+    <h3>FONE DODGE G30 </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="FONE DODGE G30 310" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE DODGE G30 310', 35, 'FONE DODGE G30 310')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/BzW27uZ.jpeg alt="FONE 6667 311">
+    <h3>FONE 6667 </h3>
+    <p>R$ 100,00</p>
+    <input type="number" id="FONE 6667 311" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 6667 311', 100, 'FONE 6667 311')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/QSHEa57.jpeg alt="FONE INOVA  950 312">
+    <h3>FONE INOVA  950 </h3>
+    <p>R$ 38,00</p>
+    <input type="number" id="FONE INOVA  950 312" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE INOVA  950 312', 38, 'FONE INOVA  950 312')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/BO7N9sQ.jpeg alt="FONE GAMER 8639 313">
+    <h3>FONE GAMER 8639 </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="FONE GAMER 8639 313" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE GAMER 8639 313', 35, 'FONE GAMER 8639 313')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/TboAMtg.jpeg alt="FONE FON 8778 314">
+    <h3>FONE FON 8778</h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="FONE FON 8778 314" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE FON 8778 314', 45, 'FONE FON 8778 314')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/YqUAbSk.jpeg alt="FONE 2092 315">
+    <h3>FONE 2092 </h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="FONE 2092 315" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2092 315', 13, 'FONE 2092 315')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/R3z6g60.jpeg alt="FONE 219 315">
+    <h3>FONE 219 </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="FONE 219 315" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 219 315', 15, 'FONE 219 315')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/unFvTTU.jpeg alt="FONE GAMER 8619 316">
+    <h3>FONE GAMER 8619 </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="FONE GAMER 8619 316" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE GAMER 8619 316', 25, 'FONE GAMER 8619 316')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/4Mci753.jpeg alt="FONE COM FIO 823 317">
+    <h3>FONE COM FIO 823</h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="FONE COM FIO 823 317" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE COM FIO 823 317', 20, 'FONE COM FIO 823 317')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/pamZoRo.jpeg alt="FONE 2311 318">
+    <h3>FONE 2311 </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="FONE 2311 318" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2311 318', 14, 'FONE 2311 318')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/vvwm8fY.jpeg alt="FONE 9025 319">
+    <h3>FONE 9025 </h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="FONE 9025 319" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 9025 319', 40, 'FONE 9025 319')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/E7IyWR1.jpeg alt="FONE 9026 320">
+    <h3>FONE 9026 </h3>
+    <p>R$ 38,00</p>
+    <input type="number" id="FONE 9026 320" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 9026 320', 38, 'FONE 9026 320')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/kauVLU1.jpeg alt="FONE 920 321">
+    <h3>FONE 920 </h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="FONE 920 321" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 920 321', 40, 'FONE 920 321')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/nky3IT0.jpeg alt="FONE GOLD B08 322">
+    <h3>FONE GOLD B08 </h3>
+    <p>R$ 75,00</p>
+    <input type="number" id="FONE GOLD B08 322" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE GOLD B08 322', 75, 'FONE GOLD B08 322')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/X4A6bfC.jpeg alt="FONE 9856 323">
+    <h3>FONE 9856 </h3>
+    <p>R$ 57,00</p>
+    <input type="number" id="FONE 9856 323" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 9856 323', 57, 'FONE 9856 323')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/UPkJKFU.jpeg alt="FONE 6694 324">
+    <h3>FONE 6694 </h3>
+    <p>R$ 57,00</p>
+    <input type="number" id="FONE 6694 324" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 6694 324', 57, 'FONE 6694 324')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/ScBqPc0.jpeg alt="FONE i12 325">
+    <h3>FONE i12 </h3>
+    <p>R$ 29,00</p>
+    <input type="number" id="FONE i12 325" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE i12 325', 29, 'FONE i12 325')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/Hcb8Ih0.jpeg alt="FONE i9S 326">
+    <h3>FONE i9S </h3>
+    <p>R$ 27,00</p>
+    <input type="number" id="FONE i9S 326" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE i9S 326', 27, 'FONE i9S 326')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/A5ZoJWN.jpeg alt="FONE 6718 327">
+    <h3>FONE 6718 </h3>
+    <p>R$ 50,00</p>
+    <input type="number" id="FONE 6718 327" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 6718 327', 50, 'FONE 6718 327')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/ARYCsFV.jpeg alt="FONE 11109 328">
+    <h3>FONE 11109 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="FONE 11109 328" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 11109 328', 45, 'FONE 11109 328')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/uFo0dOt.jpeg alt="FONE REDMI 329">
+    <h3>FONE REDMI </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="FONE REDMI 329" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE REDMI 329', 35, 'FONE REDMI 329')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/QdbHgge.jpeg alt="FONE REDMI 330">
+    <h3>FONE REDMI </h3>
+    <p>R$ 27,00</p>
+    <input type="number" id="FONE REDMI 330" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE REDMI 330', 27, 'FONE REDMI 330')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/Ue6ecUL.jpeg alt="FONE 20390 331">
+    <h3>FONE 20390</h3>
+    <p>R$ 55,00</p>
+    <input type="number" id="FONE 20390 331" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 20390 331', 55, 'FONE 20390 331')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/NslrEvn.jpeg alt="FONE 20394 332">
+    <h3>FONE 20394 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="FONE 20394 332" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 20394 332', 45, 'FONE 20394 332')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/DSbVtQO.jpeg alt="FONE 20124 333">
+    <h3>FONE 20124 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="FONE 20124 333" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 20124 333', 45, 'FONE 20124 333')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/iXri61k.jpeg alt="FONE PRO 6 334">
+    <h3>FONE PRO 6 </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="FONE PRO 6 334" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE PRO 6 334', 35, 'FONE PRO 6 334')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/EMPisNu.jpeg alt="FONE 20407 335">
+    <h3>FONE 20407 </h3>
+    <p>R$ 50,00</p>
+    <input type="number" id="FONE 20407 335" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 20407 335', 50, 'FONE 20407 335')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/DNM31kd.jpeg alt="FONE 6720 336">
+    <h3>FONE 6720 </h3>
+    <p>R$ 50,00</p>
+    <input type="number" id="FONE 6720 336" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 6720 336', 50, 'FONE 6720 336')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/t9qOh1h.jpeg alt="FONE 6687 337">
+    <h3>FONE 6687 </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="FONE 6687 337" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 6687 337', 14, 'FONE 6687 337')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/HDr3Z9o.jpeg alt="FONE YZ27 338">
+    <h3>FONE YZ27 </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="FONE YZ27 338" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE YZ27 338', 8, 'FONE YZ27 338')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/BNKTZRg.jpeg alt="FONE AZ14 339">
+    <h3>FONE AZ14 </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="FONE AZ14 339" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE AZ14 339', 8, 'FONE AZ14 339')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/YXnyD2V.jpeg alt="FONE 098 340">
+    <h3>FONE 098 </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="FONE 098 340" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 098 340', 5.50, 'FONE 098 340')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/gnzd6G5.jpeg alt="FONE 097 341">
+    <h3>FONE 097 </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="FONE 097 341" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 097 341', 5.50, 'FONE 097 341')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/nBhWDlh.jpeg alt="FONE 10050 342">
+    <h3>FONE 10050 </h3>
+    <p>R$ 7,00</p>
+    <input type="number" id="FONE 10050 342" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 10050 342', 7, 'FONE 10050 342')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/73iH8OW.jpeg alt="FONE LG 343">
+    <h3>FONE LG </h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="FONE LG 343" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE LG 343', 6, 'FONE LG 343')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/WJ5q3Q7.jpeg alt="FONE JBLE 10 344">
+    <h3>FONE JBLE 10 </h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="FONE JBLE 10 344" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE JBLE 10 344', 6, 'FONE JBLE 10 344')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/Z1hgjVu.jpeg alt="FONE HS330 345">
+    <h3>FONE HS330 </h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="FONE HS330 345" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE HS330 345', 6, 'FONE HS330 345')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/NPH7ecB.jpeg alt="FONE MOTOROLA 346">
+    <h3>FONE MOTOROLA </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="FONE MOTOROLA 346" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE MOTOROLA 346', 5.50, 'FONE MOTOROLA 346')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/uvvauUi.jpeg alt="FONE 103 347">
+    <h3>FONE 103 </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="FONE 103 347" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 103 347', 8, 'FONE 103 347 ')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/MldoB7i.jpeg alt="FONE 8701 348">
+    <h3>FONE 8701 </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="FONE 8701 348" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 8701 348', 5.50, 'FONE 8701 348')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/kugfEYA.jpeg alt="FONE 8731 349">
+    <h3>FONE 8731 </h3>
+    <p>R$ 5,00</p>
+    <input type="number" id="FONE 8731 349" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 8731 349', 5, 'FONE 8731 349')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/tHaCIik.jpeg alt="FONE 2318 350">
+    <h3>FONE 2318</h3>
+    <p>R$ 5,00</p>
+    <input type="number" id="FONE 2318 350" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2318 350', 5, 'FONE 2318 350')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/y4vtHiC.jpeg alt="FONE NIKE 002 351">
+    <h3>FONE NIKE 002 </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="FONE NIKE 002 351" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE NIKE 002 351', 8, 'FONE NIKE 002 351')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/AOQmqtY.jpeg alt="FONE 2069 352">
+    <h3>FONE 2069 </h3>
+    <p>R$ 6,00</p>
+    <input type="number" id="FONE 2069 352" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2069 352', 6, 'FONE 2069 352')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/XPNFrhF.jpeg alt="FONE 003 353">
+    <h3>FONE 003 </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="FONE 003 353" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 003 353', 8, 'FONE 003 353')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/IUOehxj.jpeg alt="FONE 2171 354">
+    <h3>FONE 2171 </h3>
+    <p>R$ 5,00</p>
+    <input type="number" id="FONE 2171 354" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2171 354', 5, 'FONE 2171 354')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/jvCbwRp.jpeg alt="FONE 7503 355">
+    <h3>FONE 7503 </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="FONE 7503 355" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 7503 355', 8, 'FONE 7503 355')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/kmvzgni.jpeg alt="FONE 30104 356">
+    <h3>FONE 30104 </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="FONE 30104 356" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 30104 356', 5.50, 'FONE 30104 356')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/RT7rkZ4.jpeg alt="FONE 9897 357">
+    <h3>FONE 9897 </h3>
+    <p>R$ 5,00</p>
+    <input type="number" id="FONE 9897 357" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 9897 357', 5, 'FONE 9897 357')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/QyBu7fi.jpeg alt="FONE 9851 358">
+    <h3>FONE 9851</h3>
+    <p>R$ 5,00</p>
+    <input type="number" id="FONE 9851 358" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 9851 358', 5, 'FONE 9851 358')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/QfCbFye.jpeg alt="FONE 2020 TIPO C 359 ">
+    <h3>FONE 2020 TIPO C </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="FONE 2020 TIPO C 359" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2020 TIPO C 359', 14, 'FONE 2020 TIPO C 359')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/NmvtwFz.jpeg alt="FONE 229 360">
+    <h3>FONE 229 </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="FONE 229 360" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 229 360', 5.50, 'FONE 229 360')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/CkYfugW.jpeg alt="FONE JBL 361">
+    <h3>FONE JBL </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="FONE JBL 361" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE JBL 361', 8, 'FONE JBL 361')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/ChfEZlR.jpeg alt="FONE SAMSUNG S10 362">
+    <h3>FONE SAMSUNG S10 </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="FONE SAMSUNG S10 362" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE SAMSUNG S10 362', 8, 'FONE SAMSUNG S10 362')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/uCXF3FN.jpeg alt="FONE SAMSUNG 363">
+    <h3>FONE SAMSUNG </h3>
+    <p>R$ 8,00</p>
+    <input type="number" id="FONE SAMSUNG 363" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE SAMSUNG 363', 8, 'FONE SAMSUNG 363')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/fteWPQb.jpeg alt="FONE 12218 364">
+    <h3>FONE 12218</h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="FONE 12218 364" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 12218 364', 15, 'FONE 12218 364')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/n9Kl3ZR.jpeg alt="FONE TIPO C 10024 365">
+    <h3>FONE TIPO C 10024 </h3>
+    <p>R$ 14,00</p>
+    <input type="number" id="FONE TIPO C 10024 365" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE TIPO C 10024 365', 14, 'FONE TIPO C 10024 365')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/QC7SGDX.jpeg alt="FONE X7 366">
+    <h3>FONE X7 </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="FONE X7 366" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE X7 366', 15, 'FONE X7 366')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/NyUWhVV.jpeg alt="FONE IOS ORIGINAL 367">
+    <h3>FONE IOS ORIGINAL </h3>
+    <p>R$ 15,00</p>
+    <input type="number" id="FONE IOS ORIGINAL 367" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE IOS ORIGINAL 367', 15, 'FONE IOS ORIGINAL 367')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/pT9zBXp.jpeg alt="FONE 10067 368">
+    <h3>FONE 10067 </h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="FONE 10067 368" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 10067 368', 3.50, 'FONE 10067 368')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/L29qJBt.jpeg alt="FONE 735 369">
+    <h3>FONE 735 </h3>
+    <p>R$ 2,20</p>
+    <input type="number" id="FONE 735 369" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 735 369', 2.20, 'FONE 735 369')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/wkrEqwC.jpeg alt="FONE 733 370">
+    <h3>FONE 733</h3>
+    <p>R$ 3,00</p>
+    <input type="number" id="FONE 733 370" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 733 370', 3, 'FONE 733 370')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/KLgU3gx.jpeg alt="FONE 10032 371">
+    <h3>FONE 10032</h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="FONE 10032 371" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 10032 371', 3.50, 'FONE 10032 371')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/Gz2EuMj.jpeg alt="FONE 2154 372">
+    <h3>FONE 2154 </h3>
+    <p>R$ 4,00</p>
+    <input type="number" id="FONE 2154 372" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2154 372', 4, 'FONE 2154 372')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/lvnzfy6.jpeg alt="FONE 7498 373">
+    <h3>FONE 7498 </h3>
+    <p>R$ 4,00</p>
+    <input type="number" id="FONE 7498 373" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 7498 373', 4, 'FONE 7498 373')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/vDZKLNw.jpeg alt="FONE 10052 374">
+    <h3>FONE 10052 </h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="FONE 10052 374" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 10052 374', 3.50, 'FONE 10052 374')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/6iieulg.jpeg alt="FONE 7496 375">
+    <h3>FONE 7496 </h3>
+    <p>R$ 4,00</p>
+    <input type="number" id="FONE 7496 375" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 7496 375', 4, 'FONE 7496 375')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/S2YnuYJ.jpeg alt="FONE 10066 376">
+    <h3>FONE 10066</h3>
+    <p>R$ 2,50</p>
+    <input type="number" id="FONE 10066 376" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 10066 376', 2.50, 'FONE 10066 376')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/pPnAG8X.jpeg alt="FONE 8605 377">
+    <h3>FONE 8605 </h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="FONE 8605 377" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 8605 377', 3.50, 'FONE 8605 377')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/6BILDx8.jpegalt="FONE 1119 378">
+    <h3>FONE 1119 </h3>
+    <p>R$ 3,50</p>
+    <input type="number" id="FONE 1119 378" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 1119 378', 3.50, 'FONE 1119 378')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/bbFou78.jpeg alt="BALANÇA 141 379">
+    <h3>BALANÇA 141</h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="BALANÇA 141 379" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('BALANÇA 141 379',45, 'BALANÇA 141 379')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/X04KK52.jpeg alt="BALANÇA 140 380">
+    <h3>BALANÇA 140 </h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="pBALANÇA 140 380" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('BALANÇA 140 380', 20, 'BALANÇA 140 380')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/XxUqFHS.jpeg alt="BALANÇA 147 381">
+    <h3>BALANÇA 147 </h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="BALANÇA 147 381" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('BALANÇA 147 381', 20, 'BALANÇA 147 381')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/uTAbytB.jpeg alt="BALANÇA 139 382">
+    <h3>BALANÇA 139 </h3>
+    <p>R$ 19,00</p>
+    <input type="number" id="BALANÇA 139 382" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('BALANÇA 139 382', 19, 'BALANÇA 139 382')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/ExhIIpL.jpeg alt="BALANÇA 10KG 383">
+    <h3>BALANÇA 10KG </h3>
+    <p>R$ 23,00</p>
+    <input type="number" id="BALANÇA 10KG 383" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('BALANÇA 10KG 383', 23, 'BALANÇA 10KG 383')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/qo2yBqY.jpeg alt="MASSAGEADOR 351 384">
+    <h3>MASSAGEADOR 351 </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="MASSAGEADOR 351 384" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MASSAGEADOR 351 384', 16, 'MASSAGEADOR 351 384')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/3WXuwew.jpeg alt="APARADOR DE BOLA DE PELO 385">
+    <h3>APARADOR DE BOLA DE PELO </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="APARADOR DE BOLA DE PELO 385" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE BOLA DE PELO 385', 35, 'APARADOR DE BOLA DE PELO 385')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/vzpwYth.jpeg alt="TRITURADOR DE ALHO 386">
+    <h3>TRITURADOR DE ALHO </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="TRITURADOR DE ALHO 386" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('TRITURADOR DE ALHO 386', 25, 'TRITURADOR DE ALHO 386')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/0g6oixF.jpeg alt="VETILADOR 119 387">
+    <h3>VETILADOR 119 </h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="VETILADOR 119 387" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('VETILADOR 119 387', 18, 'VETILADOR 119 387')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/MIKu1dT.jpeg alt="PLACA UBER 99 388">
+    <h3>PLACA UBER 99</h3>
+    <p>R$ 13,00</p>
+    <input type="number" id="PLACA UBER 99 388" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('PLACA UBER 99 388', 13, 'PLACA UBER 99 388')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/6i6kwOV.jpeg alt="RADIO COMUNICADOR 389">
+    <h3>RADIO COMUNICADOR </h3>
+    <p>R$ 115,00</p>
+    <input type="number" id="RADIO COMUNICADOR 389" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('RADIO COMUNICADOR 389', 115, 'RADIO COMUNICADOR 389')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/0mnnd1J.jpeg alt="CAMARA LAMPADA 360 390">
+    <h3>CAMARA LAMPADA 360 </h3>
+    <p>R$ 75,00</p>
+    <input type="number" id="CAMARA LAMPADA 360 390" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAMARA LAMPADA 360 390', 75, 'CAMARA LAMPADA 360 390')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/33WuIR1.jpeg alt="CAMERA 360 391">
+    <h3>CAMERA 360 </h3>
+    <p>R$ 75,00</p>
+    <input type="number" id="CAMERA 360 391" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CAMERA 360 391', 75, 'CAMERA 360 391')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/nX7gte3.jpeg alt="DESPERTADOR 8082 392">
+    <h3>DESPERTADOR 8082 </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="DESPERTADOR 8082 392" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('DESPERTADOR 8082 392', 25, 'DESPERTADOR 8082 392')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/h6mkcJq.jpeg alt="APARADOR DE PELOS 3915 393">
+    <h3>APARADOR DE PELOS 3915</h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="APARADOR DE PELOS 3915 393" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS 3915 393', 18, 'APARADOR DE PELOS 3915 393')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/XqGJKPL.jpeg alt="APARADOR DE PELOS 209 394">
+    <h3>APARADOR DE PELOS 209 </h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="APARADOR DE PELOS 209 394" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS 209 394', 18, 'APARADOR DE PELOS 209 394')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/pqlXNkb.jpeg alt="APARADOR DE PELOS 001 395">
+    <h3>APARADOR DE PELOS 001 </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="APARADOR DE PELOS 001 395" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS 001 395', 35, 'APARADOR DE PELOS 001 395')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/FWStv7Q.jpeg alt="APARADOR DE PELOS 296 396">
+    <h3>APARADOR DE PELOS 296 </h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="APARADOR DE PELOS 296 396" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS 296 396', 40, 'APARADOR DE PELOS 296 396')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/mWRBEX1.jpeg alt="APARADOR DE PELOS 2 EM 1 397">
+    <h3>APARADOR DE PELOS 2 EM 1 </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="APARADOR DE PELOS 2 EM 1 397" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS 2 EM 1 397', 25, 'APARADOR DE PELOS 2 EM 1 397')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/myHlej5.jpeg alt="APARADOR DE PELOS N99 398">
+    <h3>APARADOR DE PELOS N99</h3>
+    <p>R$ 65,00</p>
+    <input type="number" id="APARADOR DE PELOS N99 398" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS N99 398', 65, 'APARADOR DE PELOS N99 398')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/4sbWYav.jpeg alt="APARADOR DE PELOS AL 3916 399">
+    <h3>APARADOR DE PELOS AL 3916</h3>
+    <p>R$ 28,00</p>
+    <input type="number" id="APARADOR DE PELOS AL 3916 399" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS AL 3916 399', 28, 'APARADOR DE PELOS AL 3916 399')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/3IfQ7GS.jpeg alt="CORTADOR DE CABELOS 806 400">
+    <h3>CORTADOR DE CABELOS 806 </h3>
+    <p>R$ 80,00</p>
+    <input type="number" id="CORTADOR DE CABELOS 806 400" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CORTADOR DE CABELOS 806 400', 80, 'CORTADOR DE CABELOS 806 400')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/oEx5cA8.jpeg alt="APARADOR DE PELOS 236 401">
+    <h3>APARADOR DE PELOS 236</h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="APARADOR DE PELOS 236 401" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS 236 401', 45, 'APARADOR DE PELOS 236 401')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/fa9PW2T.jpeg alt="APARADOR DE PELOS 661 402">
+    <h3>APARADOR DE PELOS 661</h3>
+    <p>R$ 28,00</p>
+    <input type="number" id="produto05" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS 661 402', 28, 'APARADOR DE PELOS 661 402')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/pLLi52O.jpeg alt="APARADOR DE PELOS 3700 403">
+    <h3>APARADOR DE PELOS 3700</h3>
+    <p>R$ 85,00</p>
+    <input type="number" id="APARADOR DE PELOS 3700 403" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('APARADOR DE PELOS 3700 403', 85, 'APARADOR DE PELOS 3700 403')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/8v00Z1C.jpeg alt="Produto 04">
+    <h3>Produto 04</h3>
+    <p>R$ 500,00</p>
+    <input type="number" id="produto04" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 04', 500, 'produto04')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/NPvlnl5.jpeg alt="Produto 05">
+    <h3>Produto 05</h3>
+    <p>R$ 600,00</p>
+    <input type="number" id="produto05" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 05', 600, 'produto05')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/9QjgGuo.jpeg alt="Produto 03">
+    <h3>Produto 03</h3>
+    <p>R$ 450,00</p>
+    <input type="number" id="produto03" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 03', 450, 'produto03')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/8ydjs4L.jpeg alt="Produto 04">
+    <h3>Produto 04</h3>
+    <p>R$ 500,00</p>
+    <input type="number" id="produto04" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 04', 500, 'produto04')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/Hbr2eMC.jpeg alt="Produto 05">
+    <h3>Produto 05</h3>
+    <p>R$ 600,00</p>
+    <input type="number" id="produto05" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 05', 600, 'produto05')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/0Tpg7ca.jpeg alt="Produto 03">
+    <h3>Produto 03</h3>
+    <p>R$ 450,00</p>
+    <input type="number" id="produto03" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 03', 450, 'produto03')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/Oia5jcP.jpeg alt="Produto 04">
+    <h3>Produto 04</h3>
+    <p>R$ 500,00</p>
+    <input type="number" id="produto04" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 04', 500, 'produto04')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/vm1qiEq.jpeg alt="Produto 05">
+    <h3>Produto 05</h3>
+    <p>R$ 600,00</p>
+    <input type="number" id="produto05" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 05', 600, 'produto05')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/IDZGPG6.jpeg alt="Produto 03">
+    <h3>Produto 03</h3>
+    <p>R$ 450,00</p>
+    <input type="number" id="produto03" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 03', 450, 'produto03')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/RbUZag7.jpeg alt="Produto 04">
+    <h3>Produto 04</h3>
+    <p>R$ 500,00</p>
+    <input type="number" id="produto04" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 04', 500, 'produto04')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="games">
+    <img src=https://i.imgur.com/m0aai19.jpeg alt="Produto 05">
+    <h3>Produto 05</h3>
+    <p>R$ 600,00</p>
+    <input type="number" id="produto05" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 05', 600, 'produto05')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="COPOS">
+    <img src=https://i.imgur.com/cJXJQNK.jpeg alt="Produto 03">
+    <h3>COPO CANECA STANLEY </h3>
+    <p>R$ 00,00</p>
+    <input type="number" id="produto03" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('Produto 03', 00, 'produto03')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/Sm6dsuM.jpeg alt="PRANCHA 958 ">
+    <h3>PRANCHA 958 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="PRANCHA 958" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('PRANCHA 958', 45, 'PRANCHA 958')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/2OUTzRC.jpeg alt="PRANCHA 912">
+    <h3>PRANCHA 912 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="PRANCHA 912" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('PRANCHA 912', 45, 'PRANCHA 912')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/NzBMAAG.jpeg alt="MICROFONE 303">
+    <h3>MICROFONE 303 </h3>
+    <p>R$ 16,00</p>
+    <input type="number" id="MICROFONE 303" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MICROFONE 303', 16, 'MICROFONE 303')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/YhJYxIT.jpeg alt="MOUSE 9813">
+    <h3>MOUSE 9813 </h3>
+    <p>R$ 17,00</p>
+    <input type="number" id="MOUSE 9813" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MOUSE 9813', 17, 'MOUSE 9813')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/Qjt5cGo.jpeg alt="MOUSE 9820">
+    <h3>MOUSE 9820 </h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="MOUSE 9820" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MOUSE 9820', 18, 'MOUSE 9820')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/AuwZ438.jpeg alt="MOUSE 20055 COM FIO">
+    <h3>MOUSE 20055 COM FIO </h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="MOUSE 20055 COM FIO" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MOUSE 20055 COM FIO', 8.50, 'MOUSE 20055 COM FIO')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/kC0yEDS.jpeg alt="BARBEADOR 6776">
+    <h3>BARBEADOR 6776 </h3>
+    <p>R$ 55,00</p>
+    <input type="number" id="BARBEADOR 6776" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('BARBEADOR 6776', 55, 'BARBEADOR 6776')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="POWER BANK">
+    <img src=https://i.imgur.com/RoS9w2c.jpeg alt="POWER BANK 11051">
+    <h3>POWER BANK 11051 </h3>
+    <p>R$ 55,00</p>
+    <input type="number" id="POWER BANK 11051" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('POWER BANK 11051', 55, 'POWER BANK 11051')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/YA2fXUi.jpeg alt="VENTILADOR  FAN 851">
+    <h3>VENTILADOR  FAN 8518 </h3>
+    <p>R$ 12,00</p>
+    <input type="number" id="VENTILADOR  FAN 851" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('VENTILADOR  FAN 851', 12, 'VENTILADOR  FAN 851')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CABOS">
+    <img src=https://i.imgur.com/Gig4Tri.jpeg alt="CABO P2 8575">
+    <h3>CABO P2 8575 </h3>
+    <p>R$ 5,50</p>
+    <input type="number" id="CABO P2 8575" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CABO P2 8575', 5.50, 'CABO P2 8575')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/wIQFtqe.jpeg alt="FONE 8524">
+    <h3>FONE 8524 </h3>
+    <p>R$ 40,00</p>
+    <input type="number" id="FONE 8524" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 8524', 40, 'FONE 8524')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/7YO6lla.jpeg alt="FONE 950">
+    <h3>FONE 950 </h3>
+    <p>R$ 45,00</p>
+    <input type="number" id="FONE 950" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 950', 45, 'FONE 950')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="FONES">
+    <img src=https://i.imgur.com/UxKjqqY.jpeg alt="FONE 2219">
+    <h3>FONE 2219 </h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="FONE 2219" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 2219', 18, 'FONE 2219')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/5tAxA6g.jpeg alt="LANTERNA 5613 ">
+    <h3>LANTERNA 5613 </h3>
+    <p>R$ 35,00</p>
+    <input type="number" id="LANTERNA 5613 " value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 5613 ', 35, 'LANTERNA 5613 ')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/pSJmBAJ.jpeg alt="MIC 8641">
+    <h3>MIC 8641 </h3>
+    <p>R$ 30,00</p>
+    <input type="number" id="MIC 8641" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('MIC 8641', 30, 'MIC 8641')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/l501Qse.jpeg alt="SL 8205">
+    <h3> SL 8205</h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="SL 8205" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('SL 8205', 25, 'SL 8205')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/x6jpK6t.jpeg alt="WIFI USF">
+    <h3>WIFI USF </h3>
+    <p>R$ 18,00</p>
+    <input type="number" id="WIFI USF" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('WIFI USF5', 18, 'WIFI USF')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/8yWdA85.jpeg alt="ADPTADOR BT">
+    <h3>ADPTADOR BT </h3>
+    <p>R$ 8,50</p>
+    <input type="number" id="ADPTADOR BT" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('ADPTADOR BT', 8.50, 'ADPTADOR BT')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/Y0Rovo3.jpeg alt="ADAPTADOR BT">
+    <h3>ADAPTADOR BT </h3>
+    <p>R$ 7,00</p>
+    <input type="number" id="ADAPTADOR BT" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('ADAPTADOR BT', 7, 'ADAPTADOR BT')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/Go5iJ75.jpeg alt="CARREGADOR AUTOMOTIVO G7">
+    <h3>CARREGADOR AUTOMOTIVO G7 </h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="CARREGADOR AUTOMOTIVO G7" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR AUTOMOTIVO G7', 20, 'CARREGADOR AUTOMOTIVO G7')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/bxbU6ft.jpeg alt="PAL DE SELF 8548">
+    <h3>PAL DE SELF 8548 </h3>
+    <p>R$ 17,00</p>
+    <input type="number" id="PAL DE SELF 8548" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('PAL DE SELF 8548', 17, 'PAL DE SELF 8548')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/22Kccqi.jpeg alt="LANTERNA 404Z">
+    <h3>LANTERNA 404Z </h3>
+    <p>R$ 28,00</p>
+    <input type="number" id="LANTERNA 404Z" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('LANTERNA 404Z', 28, 'LANTERNA 404Z')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/bQiYDGd.jpeg alt="PEN DRIVE 16 GB">
+    <h3>PEN DRIVE 16 GB </h3>
+    <p>R$ 00,00</p>
+    <input type="number" id="PEN DRIVE 16 GB" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('PEN DRIVE 16 GB', 600, 'PEN DRIVE 16 GB')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/rC9IDtR.jpeg alt="CARREGADOR PORTATIL">
+    <h3>CARREGADOR PORTATIL </h3>
+    <p>R$ 450,00</p>
+    <input type="number" id="CARREGADOR PORTATIL" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR PORTATIL', 450, 'CARREGADOR PORTATIL')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/hofn153.jpeg alt="ANTENA 7028">
+    <h3>ANTENA 7028 </h3>
+    <p>R$ 20,00</p>
+    <input type="number" id="ANTENA 7028" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('ANTENA 7028', 20, 'ANTENA 7028')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="ACESSÓRIOS">
+    <img src=https://i.imgur.com/h74x5Mj.jpeg alt="WATER">
+    <h3>WATER </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="WATER" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('WATER', 25, 'WATER')">Adicionar</button>
+</div>
+<div class="produto" data-categoria="FONE">
+    <img src=https://i.imgur.com/roXS888.jpeg alt="FONE 30">
+    <h3>FONE 301 </h3>
+    <p>R$ 25,00</p>
+    <input type="number" id="FONE 30" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('FONE 301', 25, 'FONE 30')">Adicionar</button>
+</div>
+
+<div class="produto" data-categoria="CARREGADOR">
+    <img src=https://i.imgur.com/oytpkwA.jpeg alt="CARREGADOR XBOX 360">
+    <h3>CARREGADOR XBOX 360 </h3>
+    <p>R$ 500,00</p>
+    <input type="number" id="CARREGADOR XBOX 360" value="0" min="0">
+    <button onclick="adicionarAoCarrinho('CARREGADOR XBOX 360', 500, 'CARREGADOR XBOX 360')">Adicionar</button>
+</div>
+
+
+<!-- Botões Flutuantes -->
+<div class="floating-buttons">
+    <button class="finalizar-compra" onclick="finalizarCompra()">
+        Finalizar Compra
+    </button>
+    <a href="https://wa.me/5511977348501" target="_blank" class="whatsapp-btn">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+    </a>
+</div>
+
+<style>
+    .floating-buttons {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column; /* Alinha os botões em coluna */
+        align-items: center; /* Centraliza os botões horizontalmente */
+        gap: 5px; /* Diminui o espaço entre os botões */
+    }
+
+    .finalizar-compra {
+        background-color: #FF4500;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 150px; /* Define um tamanho fixo para o botão */
+        position: relative; /* Torna o botão "finalizar-compra" móvel */
+        bottom: 70px; /* Posiciona o botão acima */
+    }
+
+    .whatsapp-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        background-color: #25D366;
+        border-radius: 50%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .whatsapp-btn img {
+        width: 40px;
+        height: 40px;
+    }
+</style>
+
+<script>
+    function finalizarCompra() {
+        let mensagem = 'Olá! Gostaria de finalizar minha compra:\n';
+        let total = 0;
+
+        carrinho.forEach(item => {
+            mensagem += `- ${item.nome} (R$ ${item.preco.toFixed(2)}) x ${item.quantidade} = R$ ${(item.preco * item.quantidade).toFixed(2)}\n`;
+            total += item.preco * item.quantidade;
+        });
+
+        mensagem += `\nTotal: R$ ${total.toFixed(2)}`;
+        const linkWhatsApp = `https://wa.me/5511977348501?text=${encodeURIComponent(mensagem)}`;
+        window.open(linkWhatsApp, '_blank');
+    }
+</script>
